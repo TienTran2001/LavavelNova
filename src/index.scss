@@ -7,6 +7,21 @@
   body {
     @apply font-body;
   }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Thiết lập màu cho thumb của scrollbar */
+  *::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    @apply bg-gray/300;
+  }
+
+  /* Thiết lập kích thước cho thumb của scrollbar */
+  *::-webkit-scrollbar-thumb:vertical {
+    height: 50px;
+  }
 }
 
 @layer components {
