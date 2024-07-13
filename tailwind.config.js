@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  optimizeUniversalDefaults: true,
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx,scss}'],
   theme: {
     extend: {
@@ -7,7 +8,7 @@ export default {
         body: ['Nunito Sans', 'sans-serif'],
       },
       maxWidth: {
-        container: '1084px', // 1024px + 30px + 30px (px-[30px])
+        container: '1104px', // 1200px - 48px * 2
       },
       colors: {
         'gray/600': '#475569',
