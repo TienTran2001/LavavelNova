@@ -8,20 +8,24 @@ import { Outlet } from 'react-router-dom';
 const DashboardLayout = () => {
   return (
     <>
-      <Box sx={{ height: '2000px' }}>
+      <Box>
         <SideBarComponent />
         <TopBarComponent />
         <Box
           component={'main'}
           sx={{
-            pt: 10,
             backgroundColor: COLORS.gray100,
             ml: SIZES.sideBar,
             minHeight: '100vh',
             height: '100%',
+            paddingX: 6,
+            paddingTop: `calc(32px + ${SIZES.heightTopHeader})`,
+            paddingBottom: 4,
           }}
         >
-          <Outlet />
+          <Box maxWidth={SIZES.container} mx="auto">
+            <Outlet />
+          </Box>
         </Box>
       </Box>
     </>
