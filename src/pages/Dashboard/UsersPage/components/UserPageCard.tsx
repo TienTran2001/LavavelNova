@@ -10,6 +10,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { charBarIcon } from '../../../../assets';
 import SIZES from '../../../../utils/sizes';
 import Box from '@mui/material/Box';
+import { keyframes } from '@emotion/react';
+import CountUp from 'react-countup';
+
+const createProgressAnimation = (widthPercent: number) => keyframes`
+  from {
+    width: 0;
+  }
+  to {
+    width: ${widthPercent}%;
+  }
+`;
 
 const UserPageCard = () => {
   const [days, setDays] = useState('30');
@@ -19,6 +30,7 @@ const UserPageCard = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setDays(event.target.value);
   };
+
   return (
     <div>
       <Grid container spacing={3}>
@@ -113,7 +125,7 @@ const UserPageCard = () => {
                   <img src={charBarIcon} alt="charBarIcon" />
                 </Box>
                 <Typography fontSize={36} color={COLORS.gray500}>
-                  7
+                  <CountUp end={7} />
                 </Typography>
               </Box>
             </Box>
@@ -162,7 +174,7 @@ const UserPageCard = () => {
                 fontSize={36}
                 color={COLORS.gray500}
               >
-                {newUsersPercent}%
+                <CountUp end={newUsersPercent} />%
               </Typography>
               <Box
                 sx={{
@@ -178,6 +190,9 @@ const UserPageCard = () => {
                     backgroundColor: COLORS.green500,
                     height: '16px',
                     width: `${newUsersPercent}%`,
+                    animation: `${createProgressAnimation(
+                      newUsersPercent
+                    )} 1s ease-in-out`,
                   }}
                 ></Box>
               </Box>

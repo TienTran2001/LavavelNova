@@ -36,7 +36,7 @@ const DashboardLayout = () => {
           }}
           className="2xl:ml-[240px] ml-0"
         >
-          <Box maxWidth={SIZES.container} mx="auto">
+          <Box maxWidth={SIZES.container} mx="auto" minHeight={'70vh'}>
             <Outlet />
           </Box>
           <Box component="footer" sx={{ textAlign: 'center', mt: '39px' }}>
