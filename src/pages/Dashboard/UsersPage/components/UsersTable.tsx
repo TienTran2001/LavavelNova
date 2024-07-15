@@ -36,8 +36,8 @@ interface Data {
   avatar: string;
   name: string;
   email: string;
-  admin: boolean;
-  twoFa: boolean;
+  admin: number;
+  twoFa: number;
 }
 
 function createData(
@@ -45,8 +45,8 @@ function createData(
   avatar: string,
   name: string,
   email: string,
-  admin: boolean,
-  twoFa: boolean
+  admin: number,
+  twoFa: number
 ): Data {
   return {
     id,
@@ -64,48 +64,48 @@ const rows = [
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Mior Zaki',
     'mior@nova.laravel.com',
-    false,
-    true
+    0,
+    1
   ),
   createData(
     2,
     'https://i.pinimg.com/564x/c8/d3/6e/c8d36ef31d31f22dc0a0ba29104baf1c.jpg',
     'Suzy Kim',
     'suzykim@gmail.com',
-    true,
-    true
+    1,
+    1
   ),
   createData(
     3,
     'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Dries Vints',
     'dries@nova.laravel.com',
-    false,
-    false
+    0,
+    0
   ),
   createData(
     4,
     'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Ian Landsman',
     'ian@nova.laravel.com',
-    false,
-    true
+    0,
+    1
   ),
   createData(
     5,
     'https://i.pinimg.com/736x/9d/ab/b3/9dabb3f3d0ea95b4f5de998430277606.jpg',
     'Kim Ye-Young',
     'kimhyeyoon@gmail.com',
-    true,
-    false
+    1,
+    0
   ),
   createData(
     6,
     'https://images.unsplash.com/photo-1440589473619-3cde28941638?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Mohamed Said',
     'mohamed@nova.laravel.com',
-    false,
-    true
+    0,
+    1
   ),
 
   createData(
@@ -113,32 +113,32 @@ const rows = [
     'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Suzy',
     'suzy@gmail.com',
-    false,
-    true
+    0,
+    1
   ),
   createData(
     8,
     'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Taylor Hary',
     'hary@gmail.com',
-    true,
-    false
+    1,
+    0
   ),
   createData(
     9,
     'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
     'Suzy',
     'suzy@gmail.com',
-    false,
-    false
+    0,
+    0
   ),
   createData(
     10,
     'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
     'Suzy',
     'suzy@gmail.com',
-    true,
-    false
+    1,
+    0
   ),
 ];
 
@@ -354,15 +354,16 @@ export default function UsersTable() {
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dense, setDense] = React.useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  console.log('🚀 ~ UsersTable ~ setDense:', setDense);
+  const [rowsPerPage, setRowsPerPage] = React.useState(7);
+  console.log('🚀 ~ UsersTable ~ setRowsPerPage:', setRowsPerPage);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
   ) => {
+    console.log('🚀 ~ UsersTable ~ event:', event);
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -378,6 +379,7 @@ export default function UsersTable() {
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    console.log('🚀 ~ handleClick ~ event:', event);
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
 
@@ -397,6 +399,7 @@ export default function UsersTable() {
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
+    console.log('🚀 ~ handleChangePage ~ event:', event);
     setPage(newPage);
   };
 

@@ -13,8 +13,8 @@ import Box from '@mui/material/Box';
 
 const UserPageCard = () => {
   const [days, setDays] = useState('30');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [newUsersPercent, setNewUsersPercent] = useState(65);
+  console.log('🚀 ~ UserPageCard ~ setNewUsersPercent:', setNewUsersPercent);
 
   const handleChange = (event: SelectChangeEvent) => {
     setDays(event.target.value);
