@@ -6,7 +6,6 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,10 +14,6 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import COLORS from '../../../../utils/colors';
 import Avatar from '@mui/material/Avatar';
@@ -34,6 +29,7 @@ import {
 } from '../../../../assets';
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import Button from '@mui/material/Button';
+import CustomPagination from './CustomPaginationActions ';
 
 interface Data {
   id: number;
@@ -65,7 +61,7 @@ function createData(
 const rows = [
   createData(
     1,
-    'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
+    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Mior Zaki',
     'mior@nova.laravel.com',
     false,
@@ -77,11 +73,11 @@ const rows = [
     'Suzy Kim',
     'suzykim@gmail.com',
     true,
-    false
+    true
   ),
   createData(
     3,
-    'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Dries Vints',
     'dries@nova.laravel.com',
     false,
@@ -89,7 +85,7 @@ const rows = [
   ),
   createData(
     4,
-    'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
+    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Ian Landsman',
     'ian@nova.laravel.com',
     false,
@@ -98,14 +94,14 @@ const rows = [
   createData(
     5,
     'https://i.pinimg.com/736x/9d/ab/b3/9dabb3f3d0ea95b4f5de998430277606.jpg',
-    '김혜윤',
+    'Kim Ye-Young',
     'kimhyeyoon@gmail.com',
     true,
     false
   ),
   createData(
     6,
-    'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
+    'https://images.unsplash.com/photo-1440589473619-3cde28941638?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Mohamed Said',
     'mohamed@nova.laravel.com',
     false,
@@ -114,7 +110,7 @@ const rows = [
 
   createData(
     7,
-    'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
+    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'Suzy',
     'suzy@gmail.com',
     false,
@@ -122,9 +118,9 @@ const rows = [
   ),
   createData(
     8,
-    'https://i.pinimg.com/564x/9b/8f/b2/9b8fb25c5f0f072ef9ca71847744819d.jpg',
-    'Suzy',
-    'suzy@gmail.com',
+    'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'Taylor Hary',
+    'hary@gmail.com',
     true,
     false
   ),
@@ -251,8 +247,9 @@ interface EnhancedTableProps {
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property);
+    (property: keyof Data | undefined) =>
+    (event: React.MouseEvent<unknown>) => {
+      if (property !== undefined) onRequestSort(event, property);
     };
 
   return (
@@ -269,7 +266,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell?.id)}
+              onClick={createSortHandler(headCell.id)}
               sx={{
                 textTransform: 'uppercase',
                 fontWeight: 800,
@@ -357,7 +354,9 @@ export default function UsersTable() {
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dense, setDense] = React.useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
@@ -401,16 +400,16 @@ export default function UsersTable() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDense(event.target.checked);
+  // };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -543,32 +542,13 @@ export default function UsersTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Box className="flex items-center justify-between cs-table-pagination ">
-          <Button
-            sx={{
-              textTransform: 'none',
-              p: '11px 16px',
-              fontWeight: 800,
-              color: COLORS.gray300,
-              fontSize: 12,
-            }}
-          >
-            Previous
-          </Button>
-          <Box sx={{ fontWeight: 400, fontSize: 12, color: COLORS.gray500 }}>
-            1-1 of 7
-          </Box>
-          <Button
-            sx={{
-              textTransform: 'none',
-              p: '11px 16px',
-              fontWeight: 800,
-              color: COLORS.gray300,
-              fontSize: 12,
-            }}
-          >
-            Next
-          </Button>
+        <Box>
+          <CustomPagination
+            count={rows.length}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handleChangePage}
+          />
           {/* <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
@@ -577,6 +557,7 @@ export default function UsersTable() {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            // ActionsComponent={CustomPaginationActions}
           /> */}
         </Box>
       </Paper>

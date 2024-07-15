@@ -17,6 +17,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import React from 'react';
 import InputPrimary from '../Input/InputPrimary';
+import MenuIcon from '@mui/icons-material/Menu';
+import useMenuContext from '../../hooks/useMenuContext';
 
 const TopBarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -27,6 +29,8 @@ const TopBarComponent = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const { setIsMenuOpen } = useMenuContext();
   return (
     <>
       <AppBar
@@ -35,9 +39,8 @@ const TopBarComponent = () => {
           backgroundColor: 'white',
           boxShadow: 'none',
           color: COLORS.gray600,
-          ml: SIZES.sideBar,
-          width: `calc(100% - ${SIZES.sideBar})`,
         }}
+        className={`w-full 2xl:!w-[calc(100%_-_${SIZES.sideBar})] 2xl:ml-0 ml-[${SIZES.sideBar}]`}
       >
         <Toolbar
           variant="dense"
@@ -53,6 +56,13 @@ const TopBarComponent = () => {
               alignItems: 'center',
             }}
           >
+            <IconButton
+              className="2xl:!hidden"
+              onClick={() => setIsMenuOpen(true)}
+              sx={{ color: COLORS.gray600 }}
+            >
+              <MenuIcon />
+            </IconButton>
             {/*--------------------- input search ---------------------------- */}
             <InputPrimary
               placeholder="Press / to search"
