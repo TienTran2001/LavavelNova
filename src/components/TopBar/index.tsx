@@ -4,7 +4,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import SIZES from '../../utils/sizes';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import Avatar from '@mui/material/Avatar';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import Badge from '@mui/material/Badge';
@@ -17,6 +16,9 @@ import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import React from 'react';
+import InputPrimary from '../Input/InputPrimary';
+import MenuIcon from '@mui/icons-material/Menu';
+import useMenuContext from '../../hooks/useMenuContext';
 
 const TopBarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -27,6 +29,8 @@ const TopBarComponent = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const { setIsMenuOpen } = useMenuContext();
   return (
     <>
       <AppBar
@@ -35,9 +39,8 @@ const TopBarComponent = () => {
           backgroundColor: 'white',
           boxShadow: 'none',
           color: COLORS.gray600,
-          ml: SIZES.sideBar,
-          width: `calc(100% - ${SIZES.sideBar})`,
         }}
+        className={`w-full 2xl:!w-[calc(100%_-_${SIZES.sideBar})] 2xl:ml-0 ml-[${SIZES.sideBar}]`}
       >
         <Toolbar
           variant="dense"
@@ -53,27 +56,18 @@ const TopBarComponent = () => {
               alignItems: 'center',
             }}
           >
-            {/*--------------------- input search ---------------------------- */}
-            <Box
-              sx={{
-                backgroundColor: COLORS.gray100,
-                borderRadius: 9999,
-                display: 'flex',
-                minWidth: SIZES.inputTopBar,
-              }}
+            <IconButton
+              className="2xl:!hidden"
+              onClick={() => setIsMenuOpen(true)}
+              sx={{ color: COLORS.gray600 }}
             >
-              <IconButton
-                aria-label="search"
-                sx={{ color: COLORS.gray400, p: '4px' }}
-              >
-                <SearchIcon />
-              </IconButton>
-              <input
-                type="text"
-                className="w-full px-2 bg-transparent outline-none text-14 text-gray/600"
-                placeholder="Press / to search"
-              />
-            </Box>
+              <MenuIcon />
+            </IconButton>
+            {/*--------------------- input search ---------------------------- */}
+            <InputPrimary
+              placeholder="Press / to search"
+              backgroundColor={COLORS.gray100}
+            />
             {/*--------------------- end input search ---------------------------- */}
             <Box
               sx={{ display: 'flex', alignItems: 'center', columnGap: '8px' }}

@@ -1,8 +1,8 @@
 // import UserPage from '../pages/Dashboard/UserPage';
 import { Outlet } from 'react-router-dom';
 import { collectionIcon, dashboardIcon } from '../assets';
-import UserPage from '../pages/Dashboard/UserPage';
 import { RouteType } from './type';
+import UsersPage from '../pages/Dashboard/UsersPage/UsersPage';
 
 const appRoutes: RouteType[] = [
   {
@@ -107,7 +107,7 @@ const appRoutes: RouteType[] = [
       },
       {
         path: '/resources/users',
-        element: <UserPage />,
+        element: <UsersPage />,
         state: 'resources.users',
         sideBarProps: {
           displayName: 'Users',

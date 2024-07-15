@@ -8,7 +8,10 @@ export default {
         body: ['Nunito Sans', 'sans-serif'],
       },
       maxWidth: {
-        container: '1104px', // 1200px - 48px * 2
+        container: '1200px',
+      },
+      width: {
+        sideBar: '240px',
       },
       colors: {
         'gray/600': '#475569',
