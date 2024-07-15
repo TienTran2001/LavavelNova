@@ -31,12 +31,13 @@
 }
 
 .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiDrawer-paper.MuiDrawer-paperAnchorLeft.MuiDrawer-paperAnchorDockedLeft.css-12i7wg6-MuiPaper-root-MuiDrawer-paper {
-  @apply transition-all;
+  transition: all 0.2s ease-in-out;
 }
 
 @media only screen and (max-width: 1535px) {
   .sidebar-cs
     .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiDrawer-paper.MuiDrawer-paperAnchorLeft.MuiDrawer-paperAnchorDockedLeft.css-12i7wg6-MuiPaper-root-MuiDrawer-paper {
-    @apply -translate-x-full transition-all;
+    transform: translateX(-100%);
+    transition: all 0.2s ease-in-out;
   }
 }
