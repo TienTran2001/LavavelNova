@@ -13,6 +13,9 @@ export default {
       width: {
         sideBar: '240px',
       },
+      margin: {
+        sideBar: '240px',
+      },
       colors: {
         'gray/600': '#475569',
         'gray/500': '#64748B',

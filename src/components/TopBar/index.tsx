@@ -40,7 +40,7 @@ const TopBarComponent = () => {
           boxShadow: 'none',
           color: COLORS.gray600,
         }}
-        className={`w-full 2xl:!w-[calc(100%_-_${SIZES.sideBar})] 2xl:ml-0 ml-[${SIZES.sideBar}]`}
+        className={`w-full 2xl:!w-[calc(100%_-_${SIZES.sideBar})] ml-0 2xl:ml-sideBar`}
       >
         <Toolbar
           variant="dense"
