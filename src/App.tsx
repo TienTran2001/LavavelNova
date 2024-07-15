@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout/DashboardLayout';
 import { routes } from './routers';
 
@@ -8,6 +8,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
+            <Route
+              path="/"
+              element={<Navigate to="/resources/users" replace />}
+            />
             {routes}
           </Route>
         </Routes>

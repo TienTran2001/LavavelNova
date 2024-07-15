@@ -26,7 +26,7 @@
 
 @layer components {
   .container {
-    @apply max-w-container mx-auto;
+    @apply mx-auto max-w-container;
   }
 }
 
