@@ -3,14 +3,17 @@ import { RouteType } from '../../routers/type';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import COLORS from '../../utils/colors';
 import { NavLink } from 'react-router-dom';
+import useMenuContext from '../../hooks/useMenuContext';
 
 interface IProps {
   item: RouteType;
 }
 
 const SideBarItem = ({ item }: IProps) => {
+  const { setIsMenuOpen } = useMenuContext();
   return item.sideBarProps && item.path ? (
     <ListItemButton
+      onClick={() => setIsMenuOpen(false)}
       component={(props) => (
         <NavLink
           {...props}

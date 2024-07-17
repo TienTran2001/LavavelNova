@@ -17,6 +17,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import COLORS from '../../../../utils/colors';
 import Avatar from '@mui/material/Avatar';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+
 import {
   actionIcon,
   checkedIcon,
@@ -267,6 +269,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
+              IconComponent={order === 'desc' ? UnfoldMoreIcon : UnfoldMoreIcon}
               sx={{
                 textTransform: 'uppercase',
                 fontWeight: 800,
@@ -439,7 +442,10 @@ export default function UsersTable() {
         />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{
+              minWidth: 750,
+              borderBottom: `0.5px solid ${COLORS.gray300}`,
+            }}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >

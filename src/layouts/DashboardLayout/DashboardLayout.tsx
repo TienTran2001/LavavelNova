@@ -14,7 +14,7 @@ const DashboardLayout = () => {
     <>
       {isMenuOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-60"
+          className="fixed inset-0 z-50 bg-black bg-opacity-40"
           onClick={() => setIsMenuOpen(false)}
         ></div>
       )}

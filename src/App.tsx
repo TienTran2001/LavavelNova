@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout/DashboardLayout';
 import { routes } from './routers';
+import Login from './pages/public/Login';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             />
             {routes}
           </Route>
+          <Route path="/login" element={<Login />}></Route>
         </Routes>
       </BrowserRouter>
       {/* <DashboardLayout>
