@@ -16,7 +16,11 @@ const Login = () => {
   const { setUser } = useUserStore();
   const handleLogin = () => {
     if (valueLogin.username === 'Admin' && valueLogin.password === 'abc') {
-      setUser({ username: 'Admin' });
+      setUser({
+        username: 'Admin',
+        avatar:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
+      });
       navigate('/resources/users');
     }
     console.log('🚀 ~ Login ~ valueLogin:', valueLogin);

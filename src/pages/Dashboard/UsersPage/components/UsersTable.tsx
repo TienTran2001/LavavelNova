@@ -238,21 +238,16 @@ const headCells: readonly HeadCell[] = [
 
 interface EnhancedTableProps {
   numSelected: number;
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
+  onRequestSort: (property: keyof Data) => void;
   order: Order;
   orderBy: string;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
-  const createSortHandler =
-    (property: keyof Data | undefined) =>
-    (event: React.MouseEvent<unknown>) => {
-      if (property !== undefined) onRequestSort(event, property);
-    };
+  const createSortHandler = (property: keyof Data | undefined) => () => {
+    if (property !== undefined) onRequestSort(property);
+  };
 
   return (
     <TableHead sx={{ backgroundColor: COLORS.gray100 }}>
@@ -260,7 +255,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         <TableCell padding="checkbox"></TableCell>
         {headCells.map((headCell) => (
           <TableCell
-            key={headCell.id}
+            key={headCell?.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -352,21 +347,17 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
-export default function UsersTable() {
+function UsersTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
+  console.log('🚀 ~ UsersTable ~ selected:', selected);
+
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  console.log('🚀 ~ UsersTable ~ setDense:', setDense);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
   console.log('🚀 ~ UsersTable ~ setRowsPerPage:', setRowsPerPage);
 
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => {
-    console.log('🚀 ~ UsersTable ~ event:', event);
+  const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -381,8 +372,7 @@ export default function UsersTable() {
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    console.log('🚀 ~ handleClick ~ event:', event);
+  const handleClick = (id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
 
@@ -401,8 +391,7 @@ export default function UsersTable() {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    console.log('🚀 ~ handleChangePage ~ event:', event);
+  const handleChangePage = (newPage: number) => {
     setPage(newPage);
   };
 
@@ -447,7 +436,7 @@ export default function UsersTable() {
               borderBottom: `0.5px solid ${COLORS.gray300}`,
             }}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
+            size={'medium'}
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -463,7 +452,7 @@ export default function UsersTable() {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, Number(row.id))}
+                    onClick={() => handleClick(Number(row.id))}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -542,7 +531,7 @@ export default function UsersTable() {
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows,
+                    height: 53 * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
@@ -573,3 +562,5 @@ export default function UsersTable() {
     </Box>
   );
 }
+
+export default React.memo(UsersTable);

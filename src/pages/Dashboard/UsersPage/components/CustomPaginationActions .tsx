@@ -1,14 +1,12 @@
 import { Box, Button } from '@mui/material';
 import COLORS from '../../../../utils/colors';
+import usePaging from '../../../../hooks/usePaging';
 
 interface IProps {
   count: number;
   page: number;
   rowsPerPage: number;
-  onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    newPage: number
-  ) => void;
+  onPageChange: (newPage: number) => void;
 }
 const CustomPagination = ({
   count,
@@ -16,16 +14,20 @@ const CustomPagination = ({
   rowsPerPage,
   onPageChange,
 }: IProps) => {
-  const handleBackButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, page - 1);
+  // console.log('🚀 ~ rowsPerPage:', rowsPerPage);
+  // console.log('🚀 ~ page:', page);
+  // console.log('🚀 ~ count:', count);
+
+  const { prevClick, nextClick } = usePaging(page, onPageChange);
+
+  const handleBackButtonClick = () => {
+    prevClick();
+    onPageChange(page - 1);
   };
 
-  const handleNextButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, page + 1);
+  const handleNextButtonClick = () => {
+    nextClick();
+    onPageChange(page + 1);
   };
 
   return (

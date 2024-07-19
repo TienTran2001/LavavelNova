@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Logout, PersonAdd, Settings } from '@mui/icons-material';
-import React from 'react';
+import React, { useState } from 'react';
 import InputPrimary from '../Input/InputPrimary';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMenuContext from '../../hooks/useMenuContext';
@@ -24,12 +24,13 @@ import { useNavigate } from 'react-router-dom';
 
 const TopBarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   const { user, setUser } = useUserStore();
-  console.log('🚀 ~ TopBarComponent ~ user:', user);
   const navigate = useNavigate();
 
+  const [search, setSearch] = useState('');
+
+  const open = Boolean(anchorEl);
   const handleOpenProfile = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -40,7 +41,12 @@ const TopBarComponent = () => {
   const { setIsMenuOpen } = useMenuContext();
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('laravel');
     navigate('/login');
+  };
+
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
   };
 
   return (
@@ -77,6 +83,8 @@ const TopBarComponent = () => {
             </IconButton>
             {/*--------------------- input search ---------------------------- */}
             <InputPrimary
+              value={search}
+              onChange={(e) => handleChangeSearch(e)}
               placeholder="Press / to search"
               backgroundColor={COLORS.gray100}
             />
@@ -126,7 +134,7 @@ const TopBarComponent = () => {
                       <Avatar
                         alt="Travis Howard"
                         sx={{ width: 32, height: 32 }}
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s"
+                        src={user.avatar}
                       />
                       <Typography
                         component="span"
@@ -189,8 +197,8 @@ const TopBarComponent = () => {
             <Avatar
               alt="Travis Howard"
               sx={{ width: 32, height: 32 }}
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s"
-            />{' '}
+              src={user.avatar}
+            />
             Profile
           </MenuItem>
           <Divider />

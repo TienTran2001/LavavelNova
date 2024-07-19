@@ -4,8 +4,11 @@ import Typography from '@mui/material/Typography';
 import COLORS from '../../../../utils/colors';
 import InputPrimary from '../../../../components/Input/InputPrimary';
 import UsersTable from './UsersTable';
+import useSearchQuery from '../../../../hooks/useSearchQuery';
 
 const UsersManage = () => {
+  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();
+
   return (
     <Box>
       <Typography
@@ -24,7 +27,13 @@ const UsersManage = () => {
         justifyContent="space-between"
       >
         <Box>
-          <InputPrimary placeholder="Search" className="shadow-sm" />
+          <InputPrimary
+            value={searchQuery}
+            onSearch={handleOnSearch}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search"
+            className="shadow-sm"
+          />
         </Box>
         <Button
           variant="contained"
