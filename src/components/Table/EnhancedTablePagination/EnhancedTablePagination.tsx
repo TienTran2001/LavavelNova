@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
-import COLORS from '../../../../utils/colors';
-import usePaging from '../../../../hooks/usePaging';
+import COLORS from '../../../utils/colors';
+import usePaging from '../../../hooks/usePaging';
 
 interface IProps {
   count: number;
@@ -8,7 +8,7 @@ interface IProps {
   rowsPerPage: number;
   onPageChange: (newPage: number) => void;
 }
-const CustomPagination = ({
+const EnhancedTablePagination = ({
   count,
   page,
   rowsPerPage,
@@ -65,4 +65,4 @@ const CustomPagination = ({
   );
 };
 
-export default CustomPagination;
+export default EnhancedTablePagination;

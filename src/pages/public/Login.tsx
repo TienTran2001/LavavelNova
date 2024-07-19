@@ -2,6 +2,7 @@ import Button from '@mui/material/Button';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [valueLogin, setValueLogin] = useState<{
@@ -16,6 +17,7 @@ const Login = () => {
   const { setUser } = useUserStore();
   const handleLogin = () => {
     if (valueLogin.username === 'Admin' && valueLogin.password === 'abc') {
+      toast('🔔 Logged in successfully');
       setUser({
         username: 'Admin',
         avatar:
@@ -23,7 +25,6 @@ const Login = () => {
       });
       navigate('/resources/users');
     }
-    console.log('🚀 ~ Login ~ valueLogin:', valueLogin);
   };
 
   return (
@@ -62,7 +63,7 @@ const Login = () => {
             }
           />
         </div>
-        <Button variant="contained" onClick={handleLogin} className="">
+        <Button variant="contained" onClick={handleLogin} sx={{ py: 2 }}>
           Login
         </Button>
       </div>

@@ -1,37 +1,30 @@
 import * as React from 'react';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
+
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import { visuallyHidden } from '@mui/utils';
+
 import COLORS from '../../../../utils/colors';
 import Avatar from '@mui/material/Avatar';
-import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 
 import {
   actionIcon,
   checkedIcon,
   eyeIcon,
-  filter,
   pencilIcon,
   trashIcon,
-  videoCamera,
   xIcon,
 } from '../../../../assets';
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
-import Button from '@mui/material/Button';
-import CustomPagination from './CustomPaginationActions ';
+import EnhancedTableHead from '../../../../components/Table/EnhancedTableHead/EnhancedTableHead';
+import EnhancedTableToolbar from '../../../../components/Table/EnhancedTableToolbar/EnhancedTableToolbar';
+import EnhancedTablePagination from '../../../../components/Table/EnhancedTablePagination/EnhancedTablePagination';
 
 interface Data {
   id: number;
@@ -189,173 +182,68 @@ interface HeadCell {
   disablePadding: boolean;
   id?: keyof Data;
   label: string;
+  disableSort: boolean;
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
+const headCells: HeadCell[] = [
   {
     id: 'id',
     numeric: false,
     disablePadding: true,
     label: 'ID',
+    disableSort: false,
   },
   {
     id: 'avatar',
     numeric: false,
     disablePadding: false,
     label: 'Avatar',
+    disableSort: true,
   },
   {
     id: 'name',
     numeric: false,
     disablePadding: false,
     label: 'Name',
+    disableSort: false,
   },
   {
     id: 'email',
     numeric: false,
     disablePadding: false,
     label: 'Email',
+    disableSort: false,
   },
   {
     id: 'admin',
     numeric: false,
     disablePadding: false,
     label: 'Admin',
+    disableSort: true,
   },
   {
     id: 'twoFa',
     numeric: false,
     disablePadding: false,
     label: '2fa',
+    disableSort: true,
   },
   {
     numeric: false,
     disablePadding: false,
     label: '',
+    disableSort: true,
   },
 ];
 
-interface EnhancedTableProps {
-  numSelected: number;
-  onRequestSort: (property: keyof Data) => void;
-  order: Order;
-  orderBy: string;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property: keyof Data | undefined) => () => {
-    if (property !== undefined) onRequestSort(property);
-  };
-
-  return (
-    <TableHead sx={{ backgroundColor: COLORS.gray100 }}>
-      <TableRow>
-        <TableCell padding="checkbox"></TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell?.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-              IconComponent={order === 'desc' ? UnfoldMoreIcon : UnfoldMoreIcon}
-              sx={{
-                textTransform: 'uppercase',
-                fontWeight: 800,
-                color: COLORS.gray500,
-              }}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  rowCount: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected, rowCount, onSelectAllClick } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2, md: '4px' },
-        pr: { xs: 1, sm: 1 },
-        justifyContent: 'space-between',
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-    >
-      <Checkbox
-        color="primary"
-        sx={{ color: COLORS.gray300 }}
-        indeterminate={numSelected > 0 && numSelected < rowCount}
-        checked={rowCount > 0 && numSelected === rowCount}
-        onChange={onSelectAllClick}
-        inputProps={{
-          'aria-label': 'select all desserts',
-        }}
-      />
-
-      {numSelected > 0 && (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      )}
-      <div className="flex items-center gap-x-2">
-        <Tooltip title="video">
-          <Button>
-            <img src={videoCamera} alt="video icon" />
-            <ExpandMoreOutlinedIcon sx={{ color: COLORS.gray500 }} />
-          </Button>
-        </Tooltip>
-        <Tooltip title="Filter list">
-          <Button>
-            <img src={filter} alt="filter icon" />
-            <ExpandMoreOutlinedIcon sx={{ color: COLORS.gray500 }} />
-          </Button>
-        </Tooltip>
-      </div>
-    </Toolbar>
-  );
-}
 function UsersTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-  console.log('🚀 ~ UsersTable ~ selected:', selected);
+  const [selected, setSelected] = React.useState<number[]>([]);
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(7);
-  console.log('🚀 ~ UsersTable ~ setRowsPerPage:', setRowsPerPage);
+  const rowsPerPage = 7;
 
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -374,7 +262,7 @@ function UsersTable() {
 
   const handleClick = (id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -394,17 +282,6 @@ function UsersTable() {
   const handleChangePage = (newPage: number) => {
     setPage(newPage);
   };
-
-  // const handleChangeRowsPerPage = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
-
-  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDense(event.target.checked);
-  // };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -428,6 +305,7 @@ function UsersTable() {
           numSelected={selected.length}
           onSelectAllClick={handleSelectAllClick}
           rowCount={rows.length}
+          selected={selected}
         />
         <TableContainer>
           <Table
@@ -443,6 +321,7 @@ function UsersTable() {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
+              headCells={headCells}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -541,22 +420,12 @@ function UsersTable() {
           </Table>
         </TableContainer>
         <Box>
-          <CustomPagination
+          <EnhancedTablePagination
             count={rows.length}
             page={page}
             rowsPerPage={rowsPerPage}
             onPageChange={handleChangePage}
           />
-          {/* <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            // ActionsComponent={CustomPaginationActions}
-          /> */}
         </Box>
       </Paper>
     </Box>
