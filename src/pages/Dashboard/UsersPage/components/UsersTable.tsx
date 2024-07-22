@@ -182,7 +182,6 @@ interface HeadCell {
   disablePadding: boolean;
   id?: keyof Data;
   label: string;
-  disableSort: boolean;
   numeric: boolean;
 }
 
@@ -192,48 +191,41 @@ const headCells: HeadCell[] = [
     numeric: false,
     disablePadding: true,
     label: 'ID',
-    disableSort: false,
   },
   {
     id: 'avatar',
     numeric: false,
     disablePadding: false,
     label: 'Avatar',
-    disableSort: true,
   },
   {
     id: 'name',
     numeric: false,
     disablePadding: false,
     label: 'Name',
-    disableSort: false,
   },
   {
     id: 'email',
     numeric: false,
     disablePadding: false,
     label: 'Email',
-    disableSort: false,
   },
   {
     id: 'admin',
     numeric: false,
     disablePadding: false,
     label: 'Admin',
-    disableSort: true,
   },
   {
     id: 'twoFa',
     numeric: false,
     disablePadding: false,
     label: '2fa',
-    disableSort: true,
   },
   {
     numeric: false,
     disablePadding: false,
     label: '',
-    disableSort: true,
   },
 ];
 
@@ -241,6 +233,11 @@ function UsersTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<number[]>([]);
+
+  const actionRefs = React.useRef<HTMLDivElement[]>([]);
+  const setActionRef = (element: HTMLDivElement, index: number) => {
+    actionRefs.current[index] = element;
+  };
 
   const [page, setPage] = React.useState(0);
   const rowsPerPage = 7;
@@ -260,7 +257,19 @@ function UsersTable() {
     setSelected([]);
   };
 
-  const handleClick = (id: number) => {
+  const handleClick = (
+    id: number,
+    e: React.MouseEvent<HTMLDivElement>,
+    index: number
+  ) => {
+    // check click action
+    if (
+      actionRefs.current[index] &&
+      actionRefs.current[index].contains(e.target as Node)
+    ) {
+      console.log('hihi');
+      return;
+    }
     const selectedIndex = selected.indexOf(id);
     let newSelected: number[] = [];
 
@@ -331,7 +340,7 @@ function UsersTable() {
                 return (
                   <TableRow
                     hover
-                    onClick={() => handleClick(Number(row.id))}
+                    onClick={(e) => handleClick(Number(row.id), e, index)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -383,7 +392,12 @@ function UsersTable() {
                         <img src={xIcon} alt="x" />
                       )}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell
+                      ref={(element: HTMLDivElement) =>
+                        setActionRef(element, index)
+                      }
+                      align="left"
+                    >
                       <Box
                         display="flex"
                         alignItems="center"
