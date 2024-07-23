@@ -24,8 +24,7 @@ const createProgressAnimation = (widthPercent: number) => keyframes`
 
 const UserPageCard = () => {
   const [days, setDays] = useState('30');
-  const [newUsersPercent, setNewUsersPercent] = useState(65);
-  console.log('🚀 ~ UserPageCard ~ setNewUsersPercent:', setNewUsersPercent);
+  const newUsersPercent = 65;
 
   const handleChange = (event: SelectChangeEvent) => {
     setDays(event.target.value);

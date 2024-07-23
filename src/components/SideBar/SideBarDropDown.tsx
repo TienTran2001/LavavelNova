@@ -14,7 +14,6 @@ interface IProps {
   item: RouteType;
 }
 const SideBarDropDown = ({ item }: IProps) => {
-  console.log('🚀 ~ SideBarDropDown ~ item:', item);
   const [dropdown, setDropDow] = useState(true);
 
   return item.sideBarProps ? (

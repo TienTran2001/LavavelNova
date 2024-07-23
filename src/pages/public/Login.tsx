@@ -1,29 +1,52 @@
-import Button from '@mui/material/Button';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-toastify';
+import { loginAPI, refreshTokenAPI } from '../../apis/auth';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const Login = () => {
   const [valueLogin, setValueLogin] = useState<{
-    username: string;
+    email: string;
     password: string;
   }>({
-    username: 'Admin',
-    password: 'abc',
+    email: 'admin@gmail.com',
+    password: '123456',
   });
+  const [tokenInput, setTokenInput] = useState('');
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const { setUser } = useUserStore();
-  const handleLogin = () => {
-    if (valueLogin.username === 'Admin' && valueLogin.password === 'abc') {
+  const { setUser, setToken, setRefreshToken } = useUserStore();
+
+  const handleRefresh = async () => {
+    const res = await refreshTokenAPI({ refresh: tokenInput });
+    console.log(res);
+  };
+
+  const handleLogin = async () => {
+    setLoading(true);
+    const res = await loginAPI({
+      email: valueLogin.email,
+      password: valueLogin.password,
+    });
+    setLoading(false);
+    console.log(res);
+    if (res.status === 200) {
+      const { access, id, refresh } = res.data;
       toast('🔔 Logged in successfully');
       setUser({
-        username: 'Admin',
+        id,
+        email: 'admin@gmail.com',
         avatar:
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
       });
+      setToken(access);
+      setRefreshToken(refresh);
       navigate('/resources/users');
+    } else {
+      toast.error(res.data.detail);
     }
   };
 
@@ -39,11 +62,11 @@ const Login = () => {
             type="text"
             placeholder="Enter Username"
             name="uname"
-            value={valueLogin.username}
+            value={valueLogin.email}
             className="px-6 py-3 border rounded-lg outline-none"
             required
             onChange={(e) =>
-              setValueLogin((prev) => ({ ...prev, username: e.target.value }))
+              setValueLogin((prev) => ({ ...prev, email: e.target.value }))
             }
           />
         </div>
@@ -63,9 +86,26 @@ const Login = () => {
             }
           />
         </div>
-        <Button variant="contained" onClick={handleLogin} sx={{ py: 2 }}>
+        <LoadingButton
+          loading={loading}
+          variant="contained"
+          onClick={handleLogin}
+          sx={{ py: '12px' }}
+        >
           Login
-        </Button>
+        </LoadingButton>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="Enter Password"
+          className="px-6 py-3 border rounded-lg outline-none"
+          name="psw"
+          value={tokenInput}
+          required
+          onChange={(e) => setTokenInput(e.target.value)}
+        />
+        <button onClick={handleRefresh}>refresh</button>
       </div>
     </div>
   );
