@@ -140,7 +140,7 @@ const TopBarComponent = () => {
                         component="span"
                         sx={{ fontWeight: 600, fontSize: '14px', ml: '12px' }}
                       >
-                        {user.username}
+                        {user.email}
                       </Typography>
                       <ExpandMoreIcon sx={{ ml: '4px' }} />
                     </Button>
