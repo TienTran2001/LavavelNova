@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-toastify';
-import { loginAPI, refreshTokenAPI } from '../../apis/auth';
+import { loginAPI } from '../../apis/auth';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 const Login = () => {
@@ -13,17 +13,11 @@ const Login = () => {
     email: 'admin@gmail.com',
     password: '123456',
   });
-  const [tokenInput, setTokenInput] = useState('');
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { setUser, setToken, setRefreshToken } = useUserStore();
-
-  const handleRefresh = async () => {
-    const res = await refreshTokenAPI({ refresh: tokenInput });
-    console.log(res);
-  };
 
   const handleLogin = async () => {
     setLoading(true);
@@ -94,18 +88,6 @@ const Login = () => {
         >
           Login
         </LoadingButton>
-      </div>
-      <div>
-        <input
-          type="text"
-          placeholder="Enter Password"
-          className="px-6 py-3 border rounded-lg outline-none"
-          name="psw"
-          value={tokenInput}
-          required
-          onChange={(e) => setTokenInput(e.target.value)}
-        />
-        <button onClick={handleRefresh}>refresh</button>
       </div>
     </div>
   );
