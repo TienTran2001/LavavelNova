@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-toastify';
@@ -17,7 +17,7 @@ const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const { setUser, setToken, setRefreshToken } = useUserStore();
+  const { setUser, setToken, setRefreshToken, user } = useUserStore();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -43,6 +43,12 @@ const Login = () => {
       toast.error(res.data.detail);
     }
   };
+
+  useEffect(() => {
+    if (user !== null) {
+      navigate('/resources/users');
+    }
+  }, []);
 
   return (
     <div className="max-w-[500px] w-full py-8 px-4 mx-auto mt-[100px] border  rounded-[30px] shadow-lg">
