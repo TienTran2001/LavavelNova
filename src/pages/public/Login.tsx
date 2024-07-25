@@ -19,29 +19,8 @@ const Login = () => {
   const navigate = useNavigate();
   const { setUser, setToken, setRefreshToken, user } = useUserStore();
 
-  const handleLogin = async () => {
+  const handleSubmit = () => {
     setLoading(true);
-    const res = await loginAPI({
-      email: valueLogin.email,
-      password: valueLogin.password,
-    });
-    setLoading(false);
-    console.log(res);
-    if (res.status === 200) {
-      const { access, id, refresh } = res.data;
-      toast('🔔 Logged in successfully');
-      setUser({
-        id,
-        email: 'admin@gmail.com',
-        avatar:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
-      });
-      setToken(access);
-      setRefreshToken(refresh);
-      navigate('/resources/users');
-    } else {
-      toast.error(res.data.detail);
-    }
   };
 
   useEffect(() => {
@@ -49,6 +28,43 @@ const Login = () => {
       navigate('/resources/users');
     }
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      const handleLogin = async () => {
+        const res = await loginAPI({
+          email: valueLogin.email,
+          password: valueLogin.password,
+        });
+        setLoading(false);
+
+        if (res.status === 200) {
+          const { access, id, refresh } = res.data;
+          toast('🔔 Logged in successfully');
+          setUser({
+            id,
+            email: 'admin@gmail.com',
+            avatar:
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
+          });
+          setToken(access);
+          setRefreshToken(refresh);
+          navigate('/dashboards/main');
+        } else {
+          toast.error(res.data.detail);
+        }
+      };
+      handleLogin();
+    }
+  }, [
+    loading,
+    navigate,
+    setRefreshToken,
+    setToken,
+    setUser,
+    valueLogin.email,
+    valueLogin.password,
+  ]);
 
   return (
     <div className="max-w-[500px] w-full py-8 px-4 mx-auto mt-[100px] border  rounded-[30px] shadow-lg">
@@ -89,7 +105,7 @@ const Login = () => {
         <LoadingButton
           loading={loading}
           variant="contained"
-          onClick={handleLogin}
+          onClick={handleSubmit}
           sx={{ py: '12px' }}
         >
           Login

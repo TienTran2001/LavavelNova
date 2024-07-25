@@ -14,7 +14,7 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   rowCount: number;
-  selected: number[];
+  selected: number[] | string[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {

@@ -4,21 +4,30 @@ import { routes } from './routers';
 import Login from './pages/public/Login';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUserStore } from './store/useUserStore';
+
+import AuthChecker from './components/AuthChecker/AuthChecker';
 
 function App() {
+  const { user } = useUserStore();
+
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<DashboardLayout />}>
-            <Route
-              path="/"
-              element={<Navigate to="/resources/users" replace />}
-            />
-            {routes}
-          </Route>
-          <Route path="/login" element={<Login />}></Route>
-        </Routes>
+        <AuthChecker>
+          <Routes>
+            {user && (
+              <Route path="/" element={<DashboardLayout />}>
+                <Route
+                  path="/"
+                  element={<Navigate to="/resources/users" replace />}
+                />
+                {routes}
+              </Route>
+            )}
+            <Route path="/login" element={<Login />}></Route>
+          </Routes>
+        </AuthChecker>
       </BrowserRouter>
       {/* <DashboardLayout>
         <div className="w-[200px] h-[200px] bg-red-600">fd</div>

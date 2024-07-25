@@ -17,19 +17,19 @@ interface HeadCell<T> {
 }
 export interface EnhancedTableProps<T> {
   numSelected: number;
-  onRequestSort: (property: keyof T) => void;
-  order: Order;
-  orderBy: keyof T;
+  onRequestSort?: ((property: keyof T) => void) | undefined;
+  order?: Order;
+  orderBy?: keyof T;
   headCells: HeadCell<T>[];
 }
 
 function EnhancedTableHead<T>(props: EnhancedTableProps<T>) {
   const { order, orderBy, onRequestSort, headCells } = props;
   const createSortHandler = (property: keyof T | undefined) => () => {
-    if (property !== undefined) onRequestSort(property);
+    if (property !== undefined) if (onRequestSort) onRequestSort(property);
   };
 
-  const sortableColumns = new Set(['name', 'id', 'email']);
+  const sortableColumns = new Set(['name', 'email']);
 
   return (
     <TableHead sx={{ backgroundColor: COLORS.gray100 }}>

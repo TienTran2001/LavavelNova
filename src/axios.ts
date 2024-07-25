@@ -51,7 +51,6 @@ instance.interceptors.response.use(
   async function (error) {
     const originalConfig = error.config;
     const { response } = error;
-    console.log(response);
     if (response.status === 401 && response.data.code === 'token_not_valid') {
       try {
         const tokenStr = window.localStorage.getItem('laravel');
@@ -64,6 +63,7 @@ instance.interceptors.response.use(
             console.error('Failed to parse token:', e);
           }
         }
+        console.log(token?.state.refresh);
         // call api
         if (token?.state.refresh) {
           const res = await refreshTokenAPI({ refresh: token.state.refresh });

@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom';
 import { collectionIcon, dashboardIcon } from '../assets';
 import { RouteType } from './type';
 import UsersPage from '../pages/Dashboard/UsersPage/UsersPage';
+import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
+import MaterialCategoryDetail from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoryDetail';
 
 const appRoutes: RouteType[] = [
   {
@@ -31,18 +33,19 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: '/dashboards/user-insights',
-        element: <>This is user insights page</>,
-        state: 'dashboards.user-insights',
+        path: '/dashboards/users',
+        element: <UsersPage />,
+        state: 'dashboards.users',
         sideBarProps: {
-          displayName: 'User Insights',
+          displayName: 'Users',
         },
       },
     ],
   },
+
   {
-    state: 'resources',
-    path: '/resources',
+    state: 'materials',
+    path: '/materials',
     element: <>{<Outlet />}</>,
     sideBarProps: {
       icon: (
@@ -54,64 +57,21 @@ const appRoutes: RouteType[] = [
           />
         </>
       ),
-      displayName: 'Resources',
+      displayName: 'Materials',
     },
     child: [
       {
-        path: '/resources/addresses',
-        element: <>This is addresses page</>,
-        state: 'resources.addresses',
+        path: '/materials/categories',
+        element: <MaterialCategoriesPage />,
+        state: 'materials.categories',
         sideBarProps: {
-          displayName: 'Addresses',
+          displayName: 'Categories',
         },
       },
       {
-        path: '/resources/comments',
-        element: <>This is user comments page</>,
-        state: 'resources.comments',
-        sideBarProps: {
-          displayName: 'Comments',
-        },
-      },
-      {
-        path: '/resources/posts',
-        element: <>This is posts page</>,
-        state: 'resources.posts',
-        sideBarProps: {
-          displayName: 'Posts',
-        },
-      },
-      {
-        path: '/resources/purchases',
-        element: <>This is purchases page</>,
-        state: 'resources.purchases',
-        sideBarProps: {
-          displayName: 'Purchases',
-        },
-      },
-      {
-        path: '/resources/roles',
-        element: <>This is roles page</>,
-        state: 'resources.roles',
-        sideBarProps: {
-          displayName: 'Roles',
-        },
-      },
-      {
-        path: '/resources/tags',
-        element: <>This is Tags page</>,
-        state: 'resources.tags',
-        sideBarProps: {
-          displayName: 'Tags',
-        },
-      },
-      {
-        path: '/resources/users',
-        element: <UsersPage />,
-        state: 'resources.users',
-        sideBarProps: {
-          displayName: 'Users',
-        },
+        path: '/materials/categories/:id',
+        element: <MaterialCategoryDetail />,
+        state: 'materials.categories-detail',
       },
     ],
   },
