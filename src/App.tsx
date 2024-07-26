@@ -20,7 +20,7 @@ function App() {
               <Route path="/" element={<DashboardLayout />}>
                 <Route
                   path="/"
-                  element={<Navigate to="/resources/users" replace />}
+                  element={<Navigate to="/dashboards/main" replace />}
                 />
                 {routes}
               </Route>

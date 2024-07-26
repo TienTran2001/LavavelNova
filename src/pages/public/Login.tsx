@@ -25,7 +25,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user !== null) {
-      navigate('/resources/users');
+      navigate('/dashboards/main');
     }
   }, []);
 

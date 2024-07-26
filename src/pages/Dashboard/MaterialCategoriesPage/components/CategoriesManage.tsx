@@ -6,6 +6,7 @@ import InputPrimary from '../../../../components/Input/InputPrimary';
 import useSearchQuery from '../../../../hooks/useSearchQuery';
 
 import CategoriesTable from './CategoriesTable';
+import { Link } from 'react-router-dom';
 
 export interface category {
   id: string;
@@ -43,19 +44,21 @@ const CategoriesManage = () => {
             className="shadow-sm"
           />
         </Box>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: COLORS.primary500,
-            fontSize: 14,
-            fontWeight: 800,
-            color: 'white',
-            textTransform: 'none',
-            borderRadius: '4px',
-          }}
-        >
-          Create Category
-        </Button>
+        <Link to="/materials/categories/create">
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: COLORS.primary500,
+              fontSize: 14,
+              fontWeight: 800,
+              color: 'white',
+              textTransform: 'none',
+              borderRadius: '4px',
+            }}
+          >
+            Create Category
+          </Button>{' '}
+        </Link>
       </Box>
       {/* --------------------table------------------------ */}
       <Box mt={3}>

@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { refreshTokenAPI } from './apis/auth';
 
 interface Token {
@@ -51,7 +51,11 @@ instance.interceptors.response.use(
   async function (error) {
     const originalConfig = error.config;
     const { response } = error;
-    if (response.status === 401 && response.data.code === 'token_not_valid') {
+    if (
+      response.status === 401 &&
+      response.data.code === 'token_not_valid' &&
+      response.data.messages[0].token_type === 'access'
+    ) {
       try {
         const tokenStr = window.localStorage.getItem('laravel');
         let token: Token | null = null;
@@ -63,11 +67,9 @@ instance.interceptors.response.use(
             console.error('Failed to parse token:', e);
           }
         }
-        console.log(token?.state.refresh);
         // call api
         if (token?.state.refresh) {
           const res = await refreshTokenAPI({ refresh: token.state.refresh });
-
           const { access, refresh } = res.data;
 
           const newToken = {
@@ -82,11 +84,9 @@ instance.interceptors.response.use(
         }
         return instance(originalConfig);
       } catch (err) {
-        const axiosError = err as AxiosError;
-        if (axiosError.response && axiosError.response.status === 400) {
-          localStorage.removeItem('laravel');
-          window.location.href = '/login';
-        }
+        console.log('ahuhu');
+        localStorage.removeItem('laravel');
+        window.location.href = '/login';
         return Promise.reject(err);
       }
     }

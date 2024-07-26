@@ -5,6 +5,7 @@ import { RouteType } from './type';
 import UsersPage from '../pages/Dashboard/UsersPage/UsersPage';
 import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
 import MaterialCategoryDetail from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoryDetail';
+import CreateMaterialCategory from '../pages/Dashboard/MaterialCategoriesPage/CreateMaterialCategory';
 
 const appRoutes: RouteType[] = [
   {
@@ -72,6 +73,11 @@ const appRoutes: RouteType[] = [
         path: '/materials/categories/:id',
         element: <MaterialCategoryDetail />,
         state: 'materials.categories-detail',
+      },
+      {
+        path: '/materials/categories/create',
+        element: <CreateMaterialCategory />,
+        state: 'materials.categories.create',
       },
     ],
   },

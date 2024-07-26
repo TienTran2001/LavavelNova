@@ -1,40 +1,35 @@
 import { Box, Button } from '@mui/material';
 import COLORS from '../../../utils/colors';
-import usePaging from '../../../hooks/usePaging';
 
 interface IProps {
   count: number;
+  limit: number;
   page: number;
-  rowsPerPage: number;
-  onPageChange: (newPage: number) => void;
+  next: string | null;
+  previous: string | null;
+  handleBackButtonClick: () => void;
+  handleNextButtonClick: () => void;
 }
+
 const EnhancedTablePagination = ({
   count,
+  limit,
   page,
-  rowsPerPage,
-  onPageChange,
+  handleBackButtonClick,
+  handleNextButtonClick,
 }: IProps) => {
+  // console.log('🚀 ~ previous:', previous);
+  // console.log('🚀 ~ next:', next);
   // console.log('🚀 ~ rowsPerPage:', rowsPerPage);
   // console.log('🚀 ~ page:', page);
   // console.log('🚀 ~ count:', count);
-
-  const { prevClick, nextClick } = usePaging(page, onPageChange);
-
-  const handleBackButtonClick = () => {
-    prevClick();
-    onPageChange(page - 1);
-  };
-
-  const handleNextButtonClick = () => {
-    nextClick();
-    onPageChange(page + 1);
-  };
+  // const { prevClick, nextClick } = usePaging(page, onPageChange);
 
   return (
     <div className="flex items-center justify-between cs-table-pagination ">
       <Button
         onClick={handleBackButtonClick}
-        disabled={page === 0}
+        disabled={page < 1 ? true : false}
         sx={{
           textTransform: 'none',
           p: '11px 16px',
@@ -46,11 +41,11 @@ const EnhancedTablePagination = ({
         Previous
       </Button>
       <Box sx={{ fontWeight: 400, fontSize: 12, color: COLORS.gray500 }}>
-        {`${page + 1} of ${Math.ceil(count / rowsPerPage)}`}
+        {`${page + 1} of ${Math.ceil(count / limit)}`}
       </Box>
       <Button
         onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        disabled={page >= Math.ceil(count / limit - 1) ? true : false}
         sx={{
           textTransform: 'none',
           p: '11px 16px',

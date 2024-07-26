@@ -1,0 +1,64 @@
+import { ReactNode } from 'react';
+import {
+  FieldErrors,
+  FieldValues,
+  RegisterOptions,
+  UseFormRegister,
+} from 'react-hook-form';
+
+interface IProps {
+  containerClassName?: string;
+  label?: string;
+  id: string;
+  register: UseFormRegister<FieldValues>;
+  errors?: FieldErrors;
+  validate?: RegisterOptions;
+  value?: string;
+  children?: ReactNode;
+  disabled?: boolean;
+  labelClassName?: string;
+}
+
+const SelectForm = ({
+  containerClassName,
+  label,
+  id,
+  register,
+  errors = {},
+  validate,
+  value,
+  children,
+  disabled,
+  labelClassName = '',
+}: IProps) => {
+  return (
+    <div className={containerClassName}>
+      {label && (
+        <label
+          htmlFor={id}
+          className={`block mb-2 text-sm font-semibold text-gray/500 ${labelClassName}`}
+        >
+          {label}
+        </label>
+      )}
+      <div className="w-full">
+        <select
+          disabled={disabled ? true : false}
+          className="w-full px-3 py-2 placeholder-gray-400 border rounded-md outline-none border-gray/300 text-gray/500 sm:text-sm text-14"
+          id={id}
+          defaultValue={value}
+          {...register(id, validate)}
+        >
+          {children}
+        </select>
+        {errors[id] && (
+          <small className="inline-block mt-3 text-red-500">
+            {errors[id]?.message?.toString()}
+          </small>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SelectForm;
