@@ -51,7 +51,7 @@ const CreateMaterialCategory = () => {
         handleAddCategory(data);
       }
     }
-  }, [loading]);
+  }, [data, loading, reset]);
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray/600">
@@ -73,7 +73,7 @@ const CreateMaterialCategory = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col flex-1 bg-white rounded-16">
+            <div className="flex flex-col flex-1 bg-white shadow-sm rounded-16">
               <div className="px-8 py-5 ">
                 <InputForm
                   labelClassName=""
@@ -92,7 +92,7 @@ const CreateMaterialCategory = () => {
                 <SelectForm
                   labelClassName=""
                   containerClassName=""
-                  label="Price type"
+                  label="Price type*"
                   value=""
                   id="price_type"
                   register={register}

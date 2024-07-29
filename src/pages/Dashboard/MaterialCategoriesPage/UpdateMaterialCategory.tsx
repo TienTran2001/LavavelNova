@@ -96,7 +96,7 @@ const UpdateMaterialCategory = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col flex-1 bg-white rounded-16">
+            <div className="flex flex-col flex-1 bg-white shadow-sm rounded-16">
               <div className="px-8 py-5 ">
                 <InputForm
                   labelClassName=""
@@ -115,7 +115,7 @@ const UpdateMaterialCategory = () => {
                 <SelectForm
                   labelClassName=""
                   containerClassName=""
-                  label="Price type"
+                  label="Price type*"
                   value=""
                   id="price_type"
                   register={register}

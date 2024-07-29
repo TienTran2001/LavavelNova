@@ -25,6 +25,7 @@ import { LoadingButton } from '@mui/lab';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 import useAppContext from '../../../../hooks/useAppContext';
+import TableSkeleton from '../../../../components/Sekeletons/TableSkeleton';
 
 interface Data {
   id: number;
@@ -85,6 +86,7 @@ const CategoriesTable = () => {
 
   const [open, setOpen] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [idDelete, setIdDelete] = useState('');
 
   const handleOpenModel = (id: string) => {
@@ -95,7 +97,9 @@ const CategoriesTable = () => {
   const navigate = useNavigate();
 
   const loadMaterialCategories = async (name: string) => {
+    setLoading(true);
     const result = await getMaterialCategoriesAPI({ name });
+    setLoading(false);
     const { results, count, next, previous } = result.data;
     console.log(result.data);
     setCategories(results);
@@ -208,109 +212,119 @@ const CategoriesTable = () => {
             rowCount={categories.length}
             selected={selected}
           />
+
           <TableContainer>
-            <Table
-              sx={{
-                minWidth: 750,
-                borderBottom: `0.5px solid ${COLORS.gray300}`,
-              }}
-              aria-labelledby="tableTitle"
-              size={'medium'}
-            >
-              <EnhancedTableHead
-                numSelected={selected.length}
-                // order={order}
-                // orderBy={orderBy}
-                // onRequestSort={handleRequestSort}
-                headCells={headCells}
-              />
-              <TableBody>
-                {categories.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+            {!loading ? (
+              <Table
+                sx={{
+                  minWidth: 750,
+                  borderBottom: `0.5px solid ${COLORS.gray300}`,
+                }}
+                aria-labelledby="tableTitle"
+                size={'medium'}
+              >
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  // order={order}
+                  // orderBy={orderBy}
+                  // onRequestSort={handleRequestSort}
+                  headCells={headCells}
+                />
+                <TableBody>
+                  {categories.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(e) => handleClick(row.id, e, index)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          sx={{ color: COLORS.gray300 }}
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        sx={{ fontWeight: 800, color: COLORS.primary500 }}
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(e) => handleClick(row.id, e, index)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                        sx={{ cursor: 'pointer' }}
                       >
-                        {index + 1 + limit * page}
-                      </TableCell>
-
-                      <TableCell align="left">
-                        <img
-                          src={String(row.image)}
-                          className="w-[150px] h-[80px] object-cover rounded-lg"
-                        />
-                      </TableCell>
-                      <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                        {row.name}
-                      </TableCell>
-                      <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                        {row.price_type === 'per_quantity' ? (
-                          <>
-                            <span className="px-[6px] py-[3px] font-bold bg-[#FFF1D6] rounded-[8px] text-[#B76E00] ">
-                              Quantity
-                            </span>
-                          </>
-                        ) : (
-                          <span className="px-[6px] py-[3px] font-bold bg-green-500/30 rounded-[8px] text-[#C03530] ">
-                            Metter
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        ref={(element: HTMLDivElement) =>
-                          setActionRef(element, index)
-                        }
-                        align="left"
-                      >
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          columnGap={2}
-                          justifyContent="right"
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            sx={{ color: COLORS.gray300 }}
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                          sx={{ fontWeight: 800, color: COLORS.primary500 }}
                         >
-                          <IconButton
-                            onClick={() =>
-                              navigate(`/materials/categories/${row.id}`)
-                            }
+                          {index + 1 + limit * page}
+                        </TableCell>
+
+                        <TableCell align="left">
+                          <img
+                            src={String(row.image)}
+                            className="w-[150px] h-[80px] object-cover rounded-lg"
+                          />
+                        </TableCell>
+                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
+                          {row.name}
+                        </TableCell>
+                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
+                          {row.price_type === 'per_quantity' ? (
+                            <>
+                              <span className="px-[6px] py-[3px] font-bold bg-[#FFF1D6] rounded-[8px] text-[#B76E00] ">
+                                Quantity
+                              </span>
+                            </>
+                          ) : (
+                            <span className="px-[6px] py-[3px] font-bold bg-green-500/30 rounded-[8px] text-[#C03530] ">
+                              Metter
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell
+                          ref={(element: HTMLDivElement) =>
+                            setActionRef(element, index)
+                          }
+                          align="left"
+                        >
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            columnGap={2}
+                            justifyContent="right"
                           >
-                            <img src={pencilIcon} alt="pencil icon" />
-                          </IconButton>
-                          <IconButton onClick={() => handleOpenModel(row.id)}>
-                            <img src={trashIcon} alt="trash icon" />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                            <IconButton
+                              onClick={() =>
+                                navigate(`/materials/categories/${row.id}`)
+                              }
+                            >
+                              <img src={pencilIcon} alt="pencil icon" />
+                            </IconButton>
+                            <IconButton onClick={() => handleOpenModel(row.id)}>
+                              <img src={trashIcon} alt="trash icon" />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <>
+                <TableSkeleton />
+                <TableSkeleton />
+                <TableSkeleton />
+                <TableSkeleton />
+              </>
+            )}
           </TableContainer>
           <Box>
             <EnhancedTablePagination
