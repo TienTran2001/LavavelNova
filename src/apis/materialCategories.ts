@@ -9,13 +9,13 @@ export const getMaterialCategoriesAPI = ({ name = '', offset = 0 }) =>
 export const addMaterialCategoriesAPI = (data: {
   name: string;
   price_type: string;
-  image?: File;
+  image?: File[];
 }) => {
   const formData = new FormData();
   formData.append('name', data.name);
   formData.append('price_type', data.price_type);
 
-  if (data.image && data.image?.length > 0) {
+  if (data.image) {
     formData.append('image', data.image[0]);
   }
 

@@ -1,30 +1,30 @@
-import { useState } from 'react';
 import {
   FieldErrors,
   FieldValues,
+  Path,
   RegisterOptions,
   UseFormRegister,
 } from 'react-hook-form';
 
-interface IProps {
+interface IProps<T extends FieldValues> {
   style?: string;
   containerClassName?: string;
   label?: string;
-  id: string;
+  id: Path<T>;
   type?: string;
   placeholder?: string;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<T>;
+  errors?: FieldErrors<T>;
   min?: number;
-  errors?: FieldErrors;
   inputClassName?: string;
-  validate?: RegisterOptions;
+  validate?: RegisterOptions<T, Path<T>>;
   value?: string;
   readOnly?: boolean;
   onClick?: () => void;
   labelClassName?: string;
 }
 
-const InputForm = ({
+const InputForm = <T extends FieldValues>({
   style = 'form-input',
   containerClassName,
   label,
@@ -40,17 +40,7 @@ const InputForm = ({
   readOnly = false,
   onClick,
   labelClassName = '',
-}: IProps) => {
-  const [filePreview, setFilePreview] = useState<string | null>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFilePreview(URL.createObjectURL(file));
-    } else {
-      setFilePreview(null);
-    }
-  };
+}: IProps<T>) => {
   return (
     <div className={containerClassName}>
       {label && (
@@ -72,18 +62,7 @@ const InputForm = ({
           placeholder={placeholder}
           className={`${style}  border border-gray/300 text-gray/500 placeholder-gray-400  sm:text-sm rounded-md block w-full py-2 px-3 text-14 outline-none ${inputClassName}`}
           {...register(id, validate)}
-          onChange={(e) => {
-            handleFileChange(e);
-            register(id).onChange(e); // Keep the original onChange
-          }}
         />
-        {filePreview && (
-          <img
-            src={filePreview}
-            alt="Preview"
-            className="object-cover w-20 h-20 mt-2"
-          />
-        )}
         {errors[id] && (
           <small className="inline-block mt-3 text-red-500">
             {errors[id]?.message?.toString()}

@@ -1,5 +1,6 @@
 import { Box, Button } from '@mui/material';
 import COLORS from '../../../utils/colors';
+import usePaging from '../../../hooks/usePaging';
 
 interface IProps {
   count: number;
@@ -23,12 +24,19 @@ const EnhancedTablePagination = ({
   // console.log('🚀 ~ rowsPerPage:', rowsPerPage);
   // console.log('🚀 ~ page:', page);
   // console.log('🚀 ~ count:', count);
-  // const { prevClick, nextClick } = usePaging(page, onPageChange);
-
+  const { prevClick, nextClick, currentPageQuery } = usePaging(page);
+  const handleNext = () => {
+    handleNextButtonClick();
+    nextClick();
+  };
+  const handleBack = () => {
+    handleBackButtonClick();
+    prevClick();
+  };
   return (
     <div className="flex items-center justify-between cs-table-pagination ">
       <Button
-        onClick={handleBackButtonClick}
+        onClick={handleBack}
         disabled={page < 1 ? true : false}
         sx={{
           textTransform: 'none',
@@ -41,10 +49,10 @@ const EnhancedTablePagination = ({
         Previous
       </Button>
       <Box sx={{ fontWeight: 400, fontSize: 12, color: COLORS.gray500 }}>
-        {`${page + 1} of ${Math.ceil(count / limit)}`}
+        {`${currentPageQuery} of ${Math.ceil(count / limit)}`}
       </Box>
       <Button
-        onClick={handleNextButtonClick}
+        onClick={handleNext}
         disabled={page >= Math.ceil(count / limit - 1) ? true : false}
         sx={{
           textTransform: 'none',

@@ -11,7 +11,7 @@ const useSearchQuery = () => {
 
   const handleOnSearch = () => {
     searchParams.set('search_query', searchQuery.trim());
-    searchParams.set('_page', '0');
+    searchParams.set('_page', '1');
     navigate({
       pathname: `${location.pathname}`,
       search: `${searchParams}`,

@@ -24,6 +24,7 @@ import Modal from '@mui/material/Modal';
 import { LoadingButton } from '@mui/lab';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
+import useAppContext from '../../../../hooks/useAppContext';
 
 interface Data {
   id: number;
@@ -76,6 +77,7 @@ const CategoriesTable = () => {
 
   const [categories, setCategories] = useState<category[]>([]);
   const [countCategories, setCountCategories] = useState<number>(0);
+  const { setCountMaterialCategories } = useAppContext();
   const [next, setNext] = useState<string | null>(null);
   const [previous, setPrevious] = useState<string | null>(null);
 
@@ -100,6 +102,7 @@ const CategoriesTable = () => {
     setNext(next);
     setPrevious(previous);
     setCountCategories(count);
+    setCountMaterialCategories(count);
   };
 
   const handleDelete = async (id: string) => {
@@ -196,171 +199,181 @@ const CategoriesTable = () => {
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          onSelectAllClick={handleSelectAllClick}
-          rowCount={categories.length}
-          selected={selected}
-        />
-        <TableContainer>
-          <Table
-            sx={{
-              minWidth: 750,
-              borderBottom: `0.5px solid ${COLORS.gray300}`,
-            }}
-            aria-labelledby="tableTitle"
-            size={'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              // order={order}
-              // orderBy={orderBy}
-              // onRequestSort={handleRequestSort}
-              headCells={headCells}
-            />
-            <TableBody>
-              {categories.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(e) => handleClick(row.id, e, index)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        sx={{ color: COLORS.gray300 }}
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      sx={{ fontWeight: 800, color: COLORS.primary500 }}
-                    >
-                      {index + 1}
-                    </TableCell>
-
-                    <TableCell align="left">
-                      <img
-                        src={String(row.image)}
-                        className="w-[150px] h-[80px] object-cover rounded-lg"
-                      />
-                    </TableCell>
-                    <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                      {row.name}
-                    </TableCell>
-                    <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                      {row.price_type === 'per_quantity'
-                        ? 'quantity'
-                        : 'metter'}
-                    </TableCell>
-                    <TableCell
-                      ref={(element: HTMLDivElement) =>
-                        setActionRef(element, index)
-                      }
-                      align="left"
-                    >
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        columnGap={2}
-                        justifyContent="right"
-                      >
-                        <IconButton
-                          onClick={() =>
-                            navigate(`/materials/categories/${row.id}`)
-                          }
-                        >
-                          <img src={pencilIcon} alt="pencil icon" />
-                        </IconButton>
-                        <IconButton onClick={() => handleOpenModel(row.id)}>
-                          <img src={trashIcon} alt="trash icon" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Box>
-          <EnhancedTablePagination
-            next={next}
-            previous={previous}
-            count={countCategories}
-            page={page}
-            limit={limit}
-            handleBackButtonClick={handleBackButtonClick}
-            handleNextButtonClick={handleNextButtonClick}
+    <>
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            onSelectAllClick={handleSelectAllClick}
+            rowCount={categories.length}
+            selected={selected}
           />
-        </Box>
-      </Paper>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <div className="absolute top-1/2 left-1/2 bg-white w-full max-w-[400px] min-h-[100px] rounded-[16px] -translate-x-1/2 -translate-y-1/2 py-6 px-4">
-          <div className="flex flex-col gap-y-6">
-            <p className="font-bold text-18 text-gray/600">Delete</p>
-            <p className="font-bold text-14 text-gray/500">
-              Are you sure want to delete?
-            </p>
-            <div className="flex justify-end gap-2 ">
-              <LoadingButton
-                loading={loadingDelete}
-                variant="contained"
-                sx={{
-                  px: '12px',
-                  py: '5px',
-                  borderRadius: 2,
-                  bgcolor: COLORS.red500,
-                  fontWeight: 'bold',
-                  color: 'white',
-                  textTransform: 'capitalize',
-                }}
-                onClick={() => handleDelete(idDelete)}
-              >
-                Delete
-              </LoadingButton>
-              <Button
-                variant="outlined"
-                sx={{
-                  px: '12px',
-                  py: '5px',
-                  borderRadius: 2,
-                  border: `1px solid ${COLORS.gray300} `,
-                  fontWeight: 'bold',
-                  color: COLORS.gray600,
-                  textTransform: 'capitalize',
-                }}
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
+          <TableContainer>
+            <Table
+              sx={{
+                minWidth: 750,
+                borderBottom: `0.5px solid ${COLORS.gray300}`,
+              }}
+              aria-labelledby="tableTitle"
+              size={'medium'}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                // order={order}
+                // orderBy={orderBy}
+                // onRequestSort={handleRequestSort}
+                headCells={headCells}
+              />
+              <TableBody>
+                {categories.map((row, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(e) => handleClick(row.id, e, index)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          sx={{ color: COLORS.gray300 }}
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        sx={{ fontWeight: 800, color: COLORS.primary500 }}
+                      >
+                        {index + 1 + limit * page}
+                      </TableCell>
+
+                      <TableCell align="left">
+                        <img
+                          src={String(row.image)}
+                          className="w-[150px] h-[80px] object-cover rounded-lg"
+                        />
+                      </TableCell>
+                      <TableCell sx={{ color: COLORS.gray500 }} align="left">
+                        {row.name}
+                      </TableCell>
+                      <TableCell sx={{ color: COLORS.gray500 }} align="left">
+                        {row.price_type === 'per_quantity' ? (
+                          <>
+                            <span className="px-[6px] py-[3px] font-bold bg-[#FFF1D6] rounded-[8px] text-[#B76E00] ">
+                              Quantity
+                            </span>
+                          </>
+                        ) : (
+                          <span className="px-[6px] py-[3px] font-bold bg-green-500/30 rounded-[8px] text-[#C03530] ">
+                            Metter
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        ref={(element: HTMLDivElement) =>
+                          setActionRef(element, index)
+                        }
+                        align="left"
+                      >
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          columnGap={2}
+                          justifyContent="right"
+                        >
+                          <IconButton
+                            onClick={() =>
+                              navigate(`/materials/categories/${row.id}`)
+                            }
+                          >
+                            <img src={pencilIcon} alt="pencil icon" />
+                          </IconButton>
+                          <IconButton onClick={() => handleOpenModel(row.id)}>
+                            <img src={trashIcon} alt="trash icon" />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Box>
+            <EnhancedTablePagination
+              next={next}
+              previous={previous}
+              count={countCategories}
+              page={page}
+              limit={limit}
+              handleBackButtonClick={handleBackButtonClick}
+              handleNextButtonClick={handleNextButtonClick}
+            />
+          </Box>
+        </Paper>
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <div className="absolute top-1/2 left-1/2 bg-white w-full max-w-[400px] min-h-[100px] rounded-[16px] -translate-x-1/2 -translate-y-1/2 py-6 px-4">
+            <div className="flex flex-col gap-y-6">
+              <p className="font-bold text-18 text-gray/600">Delete</p>
+              <p className="font-bold text-14 text-gray/500">
+                Are you sure want to delete?
+              </p>
+              <div className="flex justify-end gap-2 ">
+                <LoadingButton
+                  loading={loadingDelete}
+                  variant="contained"
+                  sx={{
+                    px: '12px',
+                    py: '5px',
+                    borderRadius: 2,
+                    bgcolor: COLORS.red500,
+                    fontWeight: 'bold',
+                    color: 'white',
+                    textTransform: 'capitalize',
+                  }}
+                  onClick={() => handleDelete(idDelete)}
+                >
+                  Delete
+                </LoadingButton>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    px: '12px',
+                    py: '5px',
+                    borderRadius: 2,
+                    border: `1px solid ${COLORS.gray300} `,
+                    fontWeight: 'bold',
+                    color: COLORS.gray600,
+                    textTransform: 'capitalize',
+                  }}
+                  onClick={() => setOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
-    </Box>
+        </Modal>
+      </Box>
+    </>
   );
 };
 

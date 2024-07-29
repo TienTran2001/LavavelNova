@@ -2,24 +2,25 @@ import { ReactNode } from 'react';
 import {
   FieldErrors,
   FieldValues,
+  Path,
   RegisterOptions,
   UseFormRegister,
 } from 'react-hook-form';
 
-interface IProps {
+interface IProps<T extends FieldValues> {
   containerClassName?: string;
   label?: string;
-  id: string;
-  register: UseFormRegister<FieldValues>;
-  errors?: FieldErrors;
-  validate?: RegisterOptions;
+  id: Path<T>;
+  register: UseFormRegister<T>;
+  errors?: FieldErrors<T>;
+  validate?: RegisterOptions<T, Path<T>>;
   value?: string;
   children?: ReactNode;
   disabled?: boolean;
   labelClassName?: string;
 }
 
-const SelectForm = ({
+const SelectForm = <T extends FieldValues>({
   containerClassName,
   label,
   id,
@@ -30,7 +31,7 @@ const SelectForm = ({
   children,
   disabled,
   labelClassName = '',
-}: IProps) => {
+}: IProps<T>) => {
   return (
     <div className={containerClassName}>
       {label && (

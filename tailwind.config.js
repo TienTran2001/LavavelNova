@@ -40,6 +40,9 @@ export default {
         500: '500',
         400: '400',
       },
+      borderRadius: {
+        16: '1rem',
+      },
     },
   },
   plugins: [],
