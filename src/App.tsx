@@ -7,12 +7,21 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useUserStore } from './store/useUserStore';
 
 import AuthChecker from './components/AuthChecker/AuthChecker';
+import { useEffect, useState } from 'react';
+import Loading from './components/Loading/Loading';
 
 function App() {
+  const [loading, setLoading] = useState<boolean>(true);
   const { user } = useUserStore();
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
   return (
     <>
+      {loading && <Loading />}
       <BrowserRouter>
         <AuthChecker>
           <Routes>
