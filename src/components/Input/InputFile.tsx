@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FieldErrors,
   FieldValues,
@@ -20,6 +20,7 @@ interface IProps<T extends FieldValues> {
   errors?: FieldErrors<T>;
   validate?: RegisterOptions<T, Path<T>>;
   labelClassName?: string;
+  imageUrl?: string;
 }
 
 const InputFile = <T extends FieldValues>({
@@ -30,16 +31,16 @@ const InputFile = <T extends FieldValues>({
   errors = {},
   validate,
   labelClassName = '',
+  imageUrl = '',
 }: IProps<T>) => {
-  const [filePreview, setFilePreview] = useState<string | null>('');
+  const [filePreview, setFilePreview] = useState<string | null>(imageUrl);
   const [inputKey, setInputKey] = useState(0);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(file);
+
     if (file) {
       setFilePreview(URL.createObjectURL(file));
     } else {
@@ -51,6 +52,10 @@ const InputFile = <T extends FieldValues>({
     setFilePreview('');
     setInputKey((prevKey) => prevKey + 1);
   };
+
+  useEffect(() => {
+    setFilePreview(imageUrl);
+  }, [imageUrl]);
 
   return (
     <>
@@ -126,8 +131,12 @@ const InputFile = <T extends FieldValues>({
         </div>
       </div>
       <Modal open={open} onClose={handleClose}>
-        <div className="absolute w-3/4 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-          <img src={filePreview || ''} alt="" className="" />
+        <div className="absolute w-3/4 h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+          <img
+            src={filePreview || ''}
+            alt=""
+            className="object-contain w-full h-full"
+          />
         </div>
       </Modal>
     </>

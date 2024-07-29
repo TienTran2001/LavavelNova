@@ -4,8 +4,8 @@ import { collectionIcon, dashboardIcon } from '../assets';
 import { RouteType } from './type';
 import UsersPage from '../pages/Dashboard/UsersPage/UsersPage';
 import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
-import MaterialCategoryDetail from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoryDetail';
 import CreateMaterialCategory from '../pages/Dashboard/MaterialCategoriesPage/CreateMaterialCategory';
+import UpdateMaterialCategory from '../pages/Dashboard/MaterialCategoriesPage/UpdateMaterialCategory';
 
 const appRoutes: RouteType[] = [
   {
@@ -71,7 +71,7 @@ const appRoutes: RouteType[] = [
       },
       {
         path: '/materials/categories/:id',
-        element: <MaterialCategoryDetail />,
+        element: <UpdateMaterialCategory />,
         state: 'materials.categories-detail',
       },
       {
