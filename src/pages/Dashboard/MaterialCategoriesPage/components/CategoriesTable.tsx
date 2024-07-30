@@ -106,7 +106,7 @@ const CategoriesTable = () => {
     setNext(next);
     setPrevious(previous);
     setCountCategories(count);
-    setCountMaterialCategories(count);
+    if (searchQuery === '') setCountMaterialCategories(count);
   };
 
   const handleDelete = async (id: string) => {

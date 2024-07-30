@@ -45,7 +45,7 @@ const SelectForm = <T extends FieldValues>({
       <div className="w-full">
         <select
           disabled={disabled ? true : false}
-          className="w-full px-3 py-2 placeholder-gray-400 border rounded-md outline-none border-gray/300 text-gray/500 sm:text-sm text-14"
+          className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg outline-none border-gray/300 text-gray/500 sm:text-sm text-14"
           id={id}
           defaultValue={value}
           {...register(id, validate)}

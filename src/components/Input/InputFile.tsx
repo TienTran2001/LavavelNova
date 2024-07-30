@@ -110,10 +110,10 @@ const InputFile = <T extends FieldValues>({
                   <img
                     src={filePreview}
                     alt=""
-                    className="transition-all rounded-md vehicle-image"
+                    className="transition-all rounded-lg vehicle-image"
                   />
                   <div
-                    className="absolute inset-0 flex items-center justify-center transition-all bg-black bg-opacity-0 rounded-md cursor-pointer group hover:bg-opacity-50 "
+                    className="absolute inset-0 flex items-center justify-center transition-all bg-black bg-opacity-0 rounded-lg cursor-pointer group hover:bg-opacity-50 "
                     onClick={() => handleOpen()}
                   >
                     <VisibilityIcon className="opacity-0 text-gray/100 group-hover:opacity-50" />

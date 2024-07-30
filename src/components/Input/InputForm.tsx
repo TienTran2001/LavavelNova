@@ -60,7 +60,7 @@ const InputForm = <T extends FieldValues>({
           value={value}
           min={min}
           placeholder={placeholder}
-          className={`${style}  border border-gray/300 text-gray/500 placeholder-gray-400  sm:text-sm rounded-md block w-full py-2 px-3 text-14 outline-none ${inputClassName}`}
+          className={`${style}  border border-gray/300 text-gray/500 placeholder-gray-400  sm:text-sm rounded-lg block w-full py-2 px-3 text-14 outline-none ${inputClassName}`}
           {...register(id, validate)}
         />
         {errors[id] && (

@@ -61,7 +61,7 @@ const CreateMaterialCategory = () => {
         <form onSubmit={handleSubmit(handleOnSubmit)}>
           <div className="flex gap-x-6">
             <div className="w-1/3 ">
-              <div className="px-8 py-5 bg-white shadow-sm rounded-16 ">
+              <div className="px-8 py-5 bg-white shadow-sm rounded-[28px] ">
                 <InputFile
                   label="Image*"
                   register={register}
@@ -73,7 +73,7 @@ const CreateMaterialCategory = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col flex-1 bg-white shadow-sm rounded-16">
+            <div className="flex flex-col w-2/4 bg-white shadow-sm rounded-[28px]">
               <div className="px-8 py-5 ">
                 <InputForm
                   labelClassName=""
