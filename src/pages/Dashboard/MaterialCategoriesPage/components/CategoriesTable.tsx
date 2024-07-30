@@ -96,9 +96,9 @@ const CategoriesTable = () => {
 
   const navigate = useNavigate();
 
-  const loadMaterialCategories = async (name: string) => {
+  const loadMaterialCategories = async (name: string, offset: number = 0) => {
     setLoading(true);
-    const result = await getMaterialCategoriesAPI({ name });
+    const result = await getMaterialCategoriesAPI({ name, offset });
     setLoading(false);
     const { results, count, next, previous } = result.data;
     console.log(result.data);
@@ -116,12 +116,13 @@ const CategoriesTable = () => {
     if (response.status === 204) {
       toast('🔔 Deleted successfully!!!');
       setOpen(false);
-      loadMaterialCategories(searchQuery);
+      loadMaterialCategories(searchQuery, limit * page);
     } else toast('⚠️ Deleted error!!!');
   };
 
   useEffect(() => {
     loadMaterialCategories(searchQuery);
+    setPage(0);
   }, [searchQuery]);
 
   const actionRefs = React.useRef<HTMLDivElement[]>([]);
@@ -138,7 +139,7 @@ const CategoriesTable = () => {
     // prevClick();
     const offset = limit * (page - 1);
     const response = await getMaterialCategoriesAPI({
-      name: '',
+      name: searchQuery,
       offset,
     });
     setCategories(response.data.results);
@@ -151,7 +152,7 @@ const CategoriesTable = () => {
     // onPageChange(page + 1);
     const offset = limit * (page + 1);
     const response = await getMaterialCategoriesAPI({
-      name: '',
+      name: searchQuery,
       offset,
     });
     setCategories(response.data.results);
