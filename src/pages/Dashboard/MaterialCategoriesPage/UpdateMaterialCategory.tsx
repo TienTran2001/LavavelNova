@@ -55,8 +55,10 @@ const UpdateMaterialCategory = () => {
     if (loading) {
       const handleAddCategory = async (data: IFormInput) => {
         if (id) {
-          const file = await urlToFile(imageUrl, 'image.jpg');
-          data.image = [file];
+          if (data.image.length === 0) {
+            const file = await urlToFile(imageUrl, 'image.jpg');
+            data.image = [file];
+          }
           const response = await updateMaterialCategoryAPI(id, data);
           setLoading(false);
 
