@@ -5,39 +5,24 @@ import usePaging from '../../../hooks/usePaging';
 interface IProps {
   count: number;
   limit: number;
-  page: number;
-  next: string | null;
-  previous: string | null;
-  handleBackButtonClick: () => void;
-  handleNextButtonClick: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
-const EnhancedTablePagination = ({
-  count,
-  limit,
-  page,
-  handleBackButtonClick,
-  handleNextButtonClick,
-}: IProps) => {
-  // console.log('🚀 ~ previous:', previous);
-  // console.log('🚀 ~ next:', next);
-  // console.log('🚀 ~ rowsPerPage:', rowsPerPage);
-  // console.log('🚀 ~ page:', page);
-  // console.log('🚀 ~ count:', count);
-  const { prevClick, nextClick, currentPageQuery } = usePaging(page);
+const EnhancedTablePagination = ({ count, limit, setLoading }: IProps) => {
+  const { prevClick, nextClick, page } = usePaging();
   const handleNext = () => {
-    handleNextButtonClick();
+    setLoading(true);
     nextClick();
   };
   const handleBack = () => {
-    handleBackButtonClick();
+    setLoading(true);
     prevClick();
   };
   return (
     <div className="flex items-center justify-between cs-table-pagination ">
       <Button
         onClick={handleBack}
-        disabled={page < 1 ? true : false}
+        disabled={page <= 1 ? true : false}
         sx={{
           textTransform: 'none',
           p: '11px 16px',
@@ -49,11 +34,11 @@ const EnhancedTablePagination = ({
         Previous
       </Button>
       <Box sx={{ fontWeight: 400, fontSize: 12, color: COLORS.gray500 }}>
-        {`${currentPageQuery} of ${Math.ceil(count / limit)}`}
+        {`${page} of ${Math.ceil(count / limit)}`}
       </Box>
       <Button
         onClick={handleNext}
-        disabled={page >= Math.ceil(count / limit - 1) ? true : false}
+        disabled={page >= Math.ceil(count / limit) ? true : false}
         sx={{
           textTransform: 'none',
           p: '11px 16px',

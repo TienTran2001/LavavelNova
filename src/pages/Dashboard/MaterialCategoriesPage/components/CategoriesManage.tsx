@@ -7,8 +7,6 @@ import useSearchQuery from '../../../../hooks/useSearchQuery';
 
 import CategoriesTable from './CategoriesTable';
 import { Link } from 'react-router-dom';
-import CategoriesPageCard from './CategoriesCard';
-import useAppContext from '../../../../hooks/useAppContext';
 
 export interface category {
   id: string;
@@ -19,7 +17,6 @@ export interface category {
 
 const CategoriesManage = () => {
   const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();
-  const context = useAppContext();
 
   return (
     <Box>
@@ -32,9 +29,6 @@ const CategoriesManage = () => {
       >
         Material Categories
       </Typography>
-      <Box mt={3}>
-        <CategoriesPageCard count={context.countMaterialCategories} />
-      </Box>
       <Box
         mt="50px"
         display={'flex'}

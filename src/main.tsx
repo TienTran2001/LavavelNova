@@ -7,17 +7,14 @@ import './index.scss';
 import { theme } from './utils/theme.ts';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import { MenuProvider } from './contexts/menuContext.tsx';
-import { AppProvider } from './contexts/appContext.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppProvider>
-        <MenuProvider>
-          <App />
-        </MenuProvider>
-      </AppProvider>
+      <MenuProvider>
+        <App />
+      </MenuProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

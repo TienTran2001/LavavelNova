@@ -25,7 +25,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user !== null) {
-      navigate('/dashboards/main');
+      navigate('/materials/categories');
     }
   }, []);
 
@@ -49,7 +49,7 @@ const Login = () => {
           });
           setToken(access);
           setRefreshToken(refresh);
-          navigate('/dashboards/main');
+          navigate('/materials/categories');
         } else {
           toast.error(res.data.detail);
         }

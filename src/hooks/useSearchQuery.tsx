@@ -8,7 +8,6 @@ const useSearchQuery = () => {
   const currentSearchQuery = searchParams.get('search_query') || '';
 
   const [searchQuery, setSearchQuery] = useState(currentSearchQuery);
-
   const handleOnSearch = () => {
     searchParams.set('search_query', searchQuery.trim());
     searchParams.set('_page', '1');

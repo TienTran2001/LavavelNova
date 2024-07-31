@@ -90,7 +90,7 @@ instance.interceptors.response.use(
         return Promise.reject(err);
       }
     }
-    return response;
+    return Promise.reject(error);
   }
 );
 

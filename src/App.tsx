@@ -29,6 +29,10 @@ function App() {
               <Route path="/" element={<DashboardLayout />}>
                 <Route
                   path="/"
+                  element={<Navigate to="/materials/categories" replace />}
+                />
+                <Route
+                  path="/"
                   element={<Navigate to="/dashboards/main" replace />}
                 />
                 {routes}

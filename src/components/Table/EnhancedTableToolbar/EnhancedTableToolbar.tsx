@@ -7,8 +7,6 @@ import COLORS from '../../../utils/colors';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { toast } from 'react-toastify';
 import { alpha } from '@mui/material/styles';
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
-import { filter, videoCamera } from '../../../assets';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -60,20 +58,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           </Tooltip>
         </Typography>
       )}
-      <div className="flex items-center gap-x-2">
-        <Tooltip title="video">
-          <Button>
-            <img src={videoCamera} alt="video icon" />
-            <ExpandMoreOutlinedIcon sx={{ color: COLORS.gray500 }} />
-          </Button>
-        </Tooltip>
-        <Tooltip title="Filter list">
-          <Button>
-            <img src={filter} alt="filter icon" />
-            <ExpandMoreOutlinedIcon sx={{ color: COLORS.gray500 }} />
-          </Button>
-        </Tooltip>
-      </div>
     </Toolbar>
   );
 };

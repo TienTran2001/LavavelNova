@@ -8,7 +8,7 @@ const AuthChecker = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!user) {
-      // navigate('/login');
+      navigate('/login');
     }
   }, [user, navigate]);
 

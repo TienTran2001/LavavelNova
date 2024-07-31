@@ -24,8 +24,8 @@ import Modal from '@mui/material/Modal';
 import { LoadingButton } from '@mui/lab';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
-import useAppContext from '../../../../hooks/useAppContext';
 import TableSkeleton from '../../../../components/Sekeletons/TableSkeleton';
+import usePaging from '../../../../hooks/usePaging';
 
 interface Data {
   id: number;
@@ -74,56 +74,17 @@ const headCells: HeadCell[] = [
 ];
 
 const CategoriesTable = () => {
+  const navigate = useNavigate();
   const [selected, setSelected] = React.useState<string[]>([]);
-
   const [categories, setCategories] = useState<category[]>([]);
   const [countCategories, setCountCategories] = useState<number>(0);
-  const { setCountMaterialCategories } = useAppContext();
-  const [next, setNext] = useState<string | null>(null);
-  const [previous, setPrevious] = useState<string | null>(null);
-
-  const { searchQuery } = useSearchQuery();
-
   const [open, setOpen] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { searchQuery } = useSearchQuery();
   const [idDelete, setIdDelete] = useState('');
-
-  const handleOpenModel = (id: string) => {
-    setOpen(true);
-    setIdDelete(id);
-  };
-
-  const navigate = useNavigate();
-
-  const loadMaterialCategories = async (name: string, offset: number = 0) => {
-    setLoading(true);
-    const result = await getMaterialCategoriesAPI({ name, offset });
-    setLoading(false);
-    const { results, count, next, previous } = result.data;
-    console.log(result.data);
-    setCategories(results);
-    setNext(next);
-    setPrevious(previous);
-    setCountCategories(count);
-    if (searchQuery === '') setCountMaterialCategories(count);
-  };
-
-  const handleDelete = async (id: string) => {
-    setLoadingDelete(true);
-    const response = await deleteMaterialCategoryAPI(id);
-    setLoadingDelete(false);
-    if (response.status === 204) {
-      toast('🔔 Deleted successfully!!!');
-      setOpen(false);
-      loadMaterialCategories(searchQuery, limit * page);
-    } else toast('⚠️ Deleted error!!!');
-  };
-
-  useEffect(() => {
-    loadMaterialCategories(searchQuery);
-    setPage(0);
-  }, [searchQuery]);
+  const limit = 5;
+  const { page } = usePaging();
 
   const actionRefs = React.useRef<HTMLDivElement[]>([]);
 
@@ -131,34 +92,52 @@ const CategoriesTable = () => {
     actionRefs.current[index] = element;
   };
 
-  const [page, setPage] = React.useState(0);
-  const limit = 5;
-
-  const handleBackButtonClick = async () => {
-    // getUrlParams()
-    // prevClick();
-    const offset = limit * (page - 1);
-    const response = await getMaterialCategoriesAPI({
-      name: searchQuery,
-      offset,
-    });
-    setCategories(response.data.results);
-    setPage((prev) => prev - 1);
-    console.log(response.data);
+  const handleOpenModel = (id: string) => {
+    setOpen(true);
+    setIdDelete(id);
   };
 
-  const handleNextButtonClick = async () => {
-    // nextClick();
-    // onPageChange(page + 1);
-    const offset = limit * (page + 1);
-    const response = await getMaterialCategoriesAPI({
-      name: searchQuery,
-      offset,
-    });
-    setCategories(response.data.results);
-    setPage((prev) => prev + 1);
-    console.log(response.data);
+  const loadMaterialCategories = async (name: string, offset: number = 0) => {
+    const result = await getMaterialCategoriesAPI({ name, offset });
+    setLoading(false);
+    const { results, count } = result.data;
+    setCategories(results);
+    setCountCategories(count);
   };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteMaterialCategoryAPI(id);
+      setLoadingDelete(false);
+      setOpen(false);
+      setLoading(true);
+      toast('🔔 Deleted successfully!!!');
+    } catch (err) {
+      setLoadingDelete(false);
+      toast(`⚠️ Deleted error!!!`);
+    }
+  };
+
+  useEffect(() => {
+    if (loadingDelete) {
+      console.log('render......1');
+      handleDelete(idDelete);
+    }
+  }, [idDelete, loadingDelete]);
+
+  useEffect(() => {
+    if (loading) {
+      console.log('render......2');
+      const offset = (page - 1) * limit;
+      loadMaterialCategories(searchQuery, offset);
+    }
+  }, [searchQuery, page, limit, loading, setLoading]);
+
+  useEffect(() => {
+    console.log('render......3');
+    setLoading(true);
+    loadMaterialCategories(searchQuery, 0);
+  }, [searchQuery]);
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -226,9 +205,6 @@ const CategoriesTable = () => {
               >
                 <EnhancedTableHead
                   numSelected={selected.length}
-                  // order={order}
-                  // orderBy={orderBy}
-                  // onRequestSort={handleRequestSort}
                   headCells={headCells}
                 />
                 <TableBody>
@@ -264,7 +240,7 @@ const CategoriesTable = () => {
                           padding="none"
                           sx={{ fontWeight: 800, color: COLORS.primary500 }}
                         >
-                          {index + 1 + limit * page}
+                          {index + 1 + limit * (page - 1)}
                         </TableCell>
 
                         <TableCell align="left">
@@ -274,7 +250,9 @@ const CategoriesTable = () => {
                           />
                         </TableCell>
                         <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          {row.name}
+                          <span className=" max-w-[300px] line-clamp-1">
+                            {row.name}
+                          </span>
                         </TableCell>
                         <TableCell sx={{ color: COLORS.gray500 }} align="left">
                           {row.price_type === 'per_quantity' ? (
@@ -329,13 +307,9 @@ const CategoriesTable = () => {
           </TableContainer>
           <Box>
             <EnhancedTablePagination
-              next={next}
-              previous={previous}
               count={countCategories}
-              page={page}
               limit={limit}
-              handleBackButtonClick={handleBackButtonClick}
-              handleNextButtonClick={handleNextButtonClick}
+              setLoading={setLoading}
             />
           </Box>
         </Paper>
@@ -364,7 +338,7 @@ const CategoriesTable = () => {
                     color: 'white',
                     textTransform: 'capitalize',
                   }}
-                  onClick={() => handleDelete(idDelete)}
+                  onClick={() => setLoadingDelete(true)}
                 >
                   Delete
                 </LoadingButton>
