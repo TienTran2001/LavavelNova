@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getMaterialCategoryAPI,
   updateMaterialCategoryAPI,
@@ -7,14 +7,16 @@ import {
 import InputFile from '../../../components/Input/InputFile';
 import InputForm from '../../../components/Input/InputForm';
 import SelectForm from '../../../components/Input/SelectForm';
-import { priceType, urlToFile } from '../../../utils/constants';
+import { priceType } from '../../../utils/constants';
 import { LoadingButton } from '@mui/lab';
 import COLORS from '../../../utils/colors';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 
 interface IFormInput {
-  image: File[];
+  image?: File[];
   name: string;
   price_type: string;
 }
@@ -25,55 +27,60 @@ const UpdateMaterialCategory = () => {
   const [imageUrl, setImageUrl] = useState('');
 
   const [data, setData] = useState<IFormInput | null>(null);
+  const navigate = useNavigate();
 
   const {
     register,
     setValue,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const getDetailCategory = async (id: string) => {
-    const response = await getMaterialCategoryAPI(id);
-    const { data } = response;
+  const getDetailCategory = useCallback(
+    async (id: string) => {
+      const response = await getMaterialCategoryAPI(id);
+      const { data } = response;
 
-    setValue('name', data.name);
-    setValue('price_type', data.price_type);
-    setImageUrl(data.image);
-  };
+      setValue('name', data.name);
+      setValue('price_type', data.price_type);
+      setImageUrl(data.image);
+    },
+    [setValue]
+  );
 
   const handleOnSubmit = async (data: IFormInput) => {
     setLoading(true);
     setData(data);
   };
 
+  const handleUpdateCategory = useCallback(
+    async (data: IFormInput) => {
+      try {
+        if (id) {
+          await updateMaterialCategoryAPI(id, data);
+          setLoading(false);
+          toast('🔔 Updated successfully!!');
+        }
+      } catch (err) {
+        setLoading(false);
+        toast('Updated fail!!!');
+      }
+    },
+    [id]
+  );
+
   useEffect(() => {
     if (id) getDetailCategory(id);
-  }, []);
+  }, [id, getDetailCategory]);
 
   useEffect(() => {
     if (loading) {
-      const handleAddCategory = async (data: IFormInput) => {
-        if (id) {
-          if (data.image.length === 0) {
-            const file = await urlToFile(imageUrl, 'image.jpg');
-            data.image = [file];
-          }
-          const response = await updateMaterialCategoryAPI(id, data);
-          setLoading(false);
-
-          if (response.status === 200) {
-            toast('🔔 Updated successfully!!');
-          } else {
-            toast('Updated fail!!!');
-          }
-        }
-      };
       if (data) {
-        handleAddCategory(data);
+        handleUpdateCategory(data);
       }
     }
-  }, [data, id, loading]);
+  }, [data, handleUpdateCategory, id, loading]);
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray/600">
@@ -122,23 +129,35 @@ const UpdateMaterialCategory = () => {
                     value=""
                     id="price_type"
                     register={register}
+                    control={control}
                     validate={{
                       required: 'Price type not selected.',
                     }}
                     errors={errors}
                   >
-                    <option value="" className="!py-2" disabled>
+                    <MenuItem value={''} disabled>
                       Choose price type
-                    </option>
-                    <option value={priceType.quantity.value}>
+                    </MenuItem>
+                    <MenuItem value={priceType.quantity.value}>
                       {priceType.quantity.display}
-                    </option>
-                    <option value={priceType.metter.value}>
+                    </MenuItem>
+                    <MenuItem value={priceType.metter.value}>
                       {priceType.metter.display}
-                    </option>
+                    </MenuItem>
                   </SelectForm>
                 </div>
-                <div className="flex justify-end px-8 py-5">
+                <div className="flex justify-end px-8 py-5 gap-x-4">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: COLORS.red500,
+                      textTransform: 'revert',
+                      borderRadius: '8px',
+                    }}
+                    onClick={() => navigate(-1)}
+                  >
+                    Cancel
+                  </Button>
                   <LoadingButton
                     loading={loading}
                     sx={{

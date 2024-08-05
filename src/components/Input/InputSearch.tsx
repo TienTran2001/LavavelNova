@@ -12,7 +12,7 @@ interface IProps {
   onSearch?: () => void;
 }
 
-const InputPrimary = ({
+const InputSearch = ({
   value = '',
   placeholder = '',
   backgroundColor = 'white',
@@ -54,4 +54,4 @@ const InputPrimary = ({
   );
 };
 
-export default InputPrimary;
+export default InputSearch;

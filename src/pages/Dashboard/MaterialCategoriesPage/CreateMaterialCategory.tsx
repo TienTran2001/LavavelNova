@@ -9,6 +9,9 @@ import { addMaterialCategoriesAPI } from '../../../apis/materialCategories';
 import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
 import InputFile from '../../../components/Input/InputFile';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import MenuItem from '@mui/material/MenuItem';
 
 interface IFormInput {
   image: File[];
@@ -19,10 +22,12 @@ interface IFormInput {
 const CreateMaterialCategory = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<IFormInput | null>(null);
+  const navigate = useNavigate();
   const {
     register,
     formState: { errors },
     handleSubmit,
+    control,
     reset,
   } = useForm<IFormInput>();
 
@@ -34,16 +39,16 @@ const CreateMaterialCategory = () => {
   useEffect(() => {
     if (loading) {
       const handleAddCategory = async (data: IFormInput) => {
-        const response = await addMaterialCategoriesAPI(data);
-        setLoading(false);
-        console.log(response);
-        if (response.status === 201) {
+        try {
+          await addMaterialCategoriesAPI(data);
+          setLoading(false);
           toast('🔔 Created successfully!!');
           reset({
             name: '',
             price_type: '',
           });
-        } else {
+        } catch (err) {
+          setLoading(false);
           toast('Created fail!!!');
         }
       };
@@ -91,18 +96,17 @@ const CreateMaterialCategory = () => {
                 </div>
                 <div className="px-8 py-5">
                   <SelectForm
-                    labelClassName=""
-                    containerClassName=""
                     label="Price type*"
                     value=""
                     id="price_type"
+                    control={control}
                     register={register}
                     validate={{
                       required: 'Price type not selected.',
                     }}
                     errors={errors}
                   >
-                    <option value="" className="!py-2" disabled>
+                    {/* <option value="" className="!py-2" disabled>
                       Choose price type
                     </option>
                     <option value={priceType.quantity.value}>
@@ -110,10 +114,30 @@ const CreateMaterialCategory = () => {
                     </option>
                     <option value={priceType.metter.value}>
                       {priceType.metter.display}
-                    </option>
+                    </option> */}
+                    <MenuItem value={''} disabled>
+                      Choose price type
+                    </MenuItem>
+                    <MenuItem value={priceType.quantity.value}>
+                      {priceType.quantity.display}
+                    </MenuItem>
+                    <MenuItem value={priceType.metter.value}>
+                      {priceType.metter.display}
+                    </MenuItem>
                   </SelectForm>
                 </div>
-                <div className="flex justify-end px-8 py-5">
+                <div className="flex justify-end px-8 py-5 gap-x-4">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: COLORS.red500,
+                      textTransform: 'revert',
+                      borderRadius: '8px',
+                    }}
+                    onClick={() => navigate(-1)}
+                  >
+                    Cancel
+                  </Button>
                   <LoadingButton
                     loading={loading}
                     sx={{

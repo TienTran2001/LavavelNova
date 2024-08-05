@@ -1,25 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-toastify';
 import { loginAPI } from '../../apis/auth';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { useForm } from 'react-hook-form';
+import InputForm from '../../components/Input/InputForm';
+import logo from '../../../public/logo.svg';
+
+interface ILogin {
+  email: string;
+  password: string;
+}
 
 const Login = () => {
-  const [valueLogin, setValueLogin] = useState<{
-    email: string;
-    password: string;
-  }>({
-    email: 'admin@gmail.com',
-    password: '123456',
+  const [valueLogin, setValueLogin] = useState<ILogin>({
+    email: '',
+    password: '',
   });
+
+  const {
+    register,
+    setValue,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<ILogin>();
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { setUser, setToken, setRefreshToken, user } = useUserStore();
 
-  const handleSubmit = () => {
+  const handleOnSubmit = (data: ILogin) => {
+    setValueLogin(data);
     setLoading(true);
   };
 
@@ -27,37 +40,36 @@ const Login = () => {
     if (user !== null) {
       navigate('/materials/categories');
     }
-  }, []);
+  }, [navigate, user]);
 
-  useEffect(() => {
-    if (loading) {
-      const handleLogin = async () => {
-        const res = await loginAPI({
-          email: valueLogin.email,
-          password: valueLogin.password,
-        });
-        setLoading(false);
+  const handleLogin = useCallback(async () => {
+    try {
+      const res = await loginAPI({
+        email: valueLogin.email,
+        password: valueLogin.password,
+      });
+      setLoading(false);
 
-        if (res.status === 200) {
-          const { access, id, refresh } = res.data;
-          toast('🔔 Logged in successfully');
-          setUser({
-            id,
-            email: 'admin@gmail.com',
-            avatar:
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
-          });
-          setToken(access);
-          setRefreshToken(refresh);
-          navigate('/materials/categories');
-        } else {
-          toast.error(res.data.detail);
-        }
+      const { access, id, refresh } = res.data;
+      toast('🔔 Logged in successfully');
+      setUser({
+        id,
+        email: 'admin@gmail.com',
+        avatar:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
+      });
+      setToken(access);
+      setRefreshToken(refresh);
+      navigate('/materials/categories');
+    } catch (err) {
+      setLoading(false);
+      const { response } = err as {
+        response?: { data: { detail: string } };
       };
-      handleLogin();
+      if (response && response.data && response.data.detail)
+        toast.error(response.data.detail);
     }
   }, [
-    loading,
     navigate,
     setRefreshToken,
     setToken,
@@ -66,50 +78,67 @@ const Login = () => {
     valueLogin.password,
   ]);
 
+  useEffect(() => {
+    if (loading) {
+      handleLogin();
+    }
+  }, [loading, handleLogin]);
+
+  useEffect(() => {
+    setValue('email', 'admin@gmail.com');
+    setValue('password', '123456');
+  }, [setValue]);
   return (
-    <div className="max-w-[500px] w-full py-8 px-4 mx-auto mt-[100px] border  rounded-[30px] shadow-lg">
-      <h2 className="text-3xl font-bold text-center">Login</h2>
-      <div className="flex flex-col mt-8 gap-y-6">
-        <div className="flex flex-col gap-y-4">
-          <label htmlFor="uname" className="">
-            <b>Username</b>
-          </label>
-          <input
-            type="text"
-            placeholder="Enter Username"
-            name="uname"
-            value={valueLogin.email}
-            className="px-6 py-3 border rounded-lg outline-none"
-            required
-            onChange={(e) =>
-              setValueLogin((prev) => ({ ...prev, email: e.target.value }))
-            }
-          />
+    <div className="fixed inset-0 bg-primary/500">
+      <div className="max-w-[450px] p-8 w-full absolute right-0 top-0 bottom-0 bg-white">
+        <div className="flex items-center justify-center">
+          <img src={logo} alt="logo" className="object-cover w-[50px] h-full" />
+          {/* <img src={brandName} alt="brand name" /> */}
         </div>
-        <div className="flex flex-col gap-y-4">
-          <label htmlFor="psw">
-            <b>Password</b>
-          </label>
-          <input
-            type="password"
-            placeholder="Enter Password"
-            className="px-6 py-3 border rounded-lg outline-none"
-            name="psw"
-            value={valueLogin.password}
-            required
-            onChange={(e) =>
-              setValueLogin((prev) => ({ ...prev, password: e.target.value }))
-            }
-          />
+        <h2 className="mt-4 text-3xl font-bold text-center">Login</h2>
+        <div className="flex flex-col mt-8 gap-y-6">
+          <div className="flex flex-col gap-y-4">
+            <InputForm
+              label="Email*"
+              register={register}
+              id="email"
+              placeholder="Enter email..."
+              validate={{
+                required: 'Email is required.',
+                pattern: {
+                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: 'Invalid email!',
+                },
+              }}
+              errors={errors}
+            />
+            <InputForm
+              label="Password*"
+              type="password"
+              register={register}
+              id="password"
+              placeholder="Enter password..."
+              validate={{
+                required: 'Password is required.',
+              }}
+              errors={errors}
+            />
+          </div>
+          <LoadingButton
+            loading={loading}
+            variant="contained"
+            onClick={handleSubmit(handleOnSubmit)}
+            sx={{
+              py: '8px',
+              borderRadius: '8px',
+              textTransform: 'capitalize',
+              fontSize: '18px',
+              fontWeight: 700,
+            }}
+          >
+            Login
+          </LoadingButton>
         </div>
-        <LoadingButton
-          loading={loading}
-          variant="contained"
-          onClick={handleSubmit}
-          sx={{ py: '12px' }}
-        >
-          Login
-        </LoadingButton>
       </div>
     </div>
   );

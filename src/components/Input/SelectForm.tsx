@@ -1,22 +1,26 @@
 import { ReactNode } from 'react';
 import {
+  Controller,
   FieldErrors,
   FieldValues,
   Path,
   RegisterOptions,
   UseFormRegister,
+  Control,
 } from 'react-hook-form';
+import Select from '@mui/material/Select';
+import COLORS from '../../utils/colors';
 
 interface IProps<T extends FieldValues> {
   containerClassName?: string;
   label?: string;
   id: Path<T>;
+  control: Control<T>;
   register: UseFormRegister<T>;
   errors?: FieldErrors<T>;
   validate?: RegisterOptions<T, Path<T>>;
   value?: string;
   children?: ReactNode;
-  disabled?: boolean;
   labelClassName?: string;
 }
 
@@ -24,12 +28,12 @@ const SelectForm = <T extends FieldValues>({
   containerClassName,
   label,
   id,
+  control,
   register,
   errors = {},
   validate,
-  value,
+  value = '',
   children,
-  disabled,
   labelClassName = '',
 }: IProps<T>) => {
   return (
@@ -43,15 +47,31 @@ const SelectForm = <T extends FieldValues>({
         </label>
       )}
       <div className="w-full">
-        <select
-          disabled={disabled ? true : false}
-          className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg outline-none border-gray/300 text-gray/500 sm:text-sm text-14"
-          id={id}
-          defaultValue={value}
-          {...register(id, validate)}
-        >
-          {children}
-        </select>
+        <Controller
+          name={id}
+          control={control}
+          defaultValue={value as never}
+          render={({ field: { value } }) => (
+            <Select
+              id={id}
+              value={value}
+              defaultValue={value}
+              {...register(id, validate)}
+              sx={{
+                color: COLORS.gray600,
+                fontSize: '16px',
+                borderRadius: '8px',
+                '& .MuiSelect-select': {
+                  padding: '8px 12px',
+                },
+              }}
+              fullWidth
+            >
+              {children}
+            </Select>
+          )}
+        />
+
         {errors[id] && (
           <small className="inline-block mt-3 text-red-500">
             {errors[id]?.message?.toString()}

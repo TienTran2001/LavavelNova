@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import COLORS from '../../../../utils/colors';
-import InputPrimary from '../../../../components/Input/InputPrimary';
+import InputSearch from '../../../../components/Input/InputSearch';
 import UsersTable from './UsersTable';
 import useSearchQuery from '../../../../hooks/useSearchQuery';
 
@@ -27,7 +27,7 @@ const UsersManage = () => {
         justifyContent="space-between"
       >
         <Box>
-          <InputPrimary
+          <InputSearch
             value={searchQuery}
             onSearch={handleOnSearch}
             onChange={(e) => setSearchQuery(e.target.value)}

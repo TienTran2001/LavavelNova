@@ -16,7 +16,7 @@ import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import React, { useState } from 'react';
-import InputPrimary from '../Input/InputPrimary';
+import InputSearch from '../Input/InputSearch';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMenuContext from '../../hooks/useMenuContext';
 import { useUserStore } from '../../store/useUserStore';
@@ -82,7 +82,7 @@ const TopBarComponent = () => {
               <MenuIcon />
             </IconButton>
             {/*--------------------- input search ---------------------------- */}
-            <InputPrimary
+            <InputSearch
               value={search}
               onChange={(e) => handleChangeSearch(e)}
               placeholder="Press / to search"

@@ -1,3 +1,4 @@
+import { TextField } from '@mui/material';
 import {
   FieldErrors,
   FieldValues,
@@ -5,9 +6,10 @@ import {
   RegisterOptions,
   UseFormRegister,
 } from 'react-hook-form';
+import COLORS from '../../utils/colors';
 
 interface IProps<T extends FieldValues> {
-  style?: string;
+  // style?: string;
   containerClassName?: string;
   label?: string;
   id: Path<T>;
@@ -16,7 +18,7 @@ interface IProps<T extends FieldValues> {
   register: UseFormRegister<T>;
   errors?: FieldErrors<T>;
   min?: number;
-  inputClassName?: string;
+  // inputClassName?: string;
   validate?: RegisterOptions<T, Path<T>>;
   value?: string;
   readOnly?: boolean;
@@ -25,7 +27,6 @@ interface IProps<T extends FieldValues> {
 }
 
 const InputForm = <T extends FieldValues>({
-  style = 'form-input',
   containerClassName,
   label,
   id,
@@ -34,7 +35,6 @@ const InputForm = <T extends FieldValues>({
   register,
   min,
   errors = {},
-  inputClassName,
   validate,
   value,
   readOnly = false,
@@ -52,7 +52,7 @@ const InputForm = <T extends FieldValues>({
         </label>
       )}
       <div className="w-full">
-        <input
+        {/* <input
           onClick={onClick}
           type={type}
           id={id}
@@ -61,6 +61,34 @@ const InputForm = <T extends FieldValues>({
           min={min}
           placeholder={placeholder}
           className={`${style}  border border-gray/300 text-gray/500 placeholder-gray-400  sm:text-sm rounded-lg block w-full py-2 px-3 text-14 outline-none ${inputClassName}`}
+          {...register(id, validate)}
+        /> */}
+        <TextField
+          onClick={onClick}
+          type={type}
+          id={id}
+          InputProps={{
+            readOnly: readOnly,
+            inputProps: { min: min },
+          }}
+          value={value}
+          placeholder={placeholder}
+          // error={!!errors[id]}
+          // helperText={errors[id]?.message?.toString()}
+          variant="outlined"
+          // className={`${style}  border border-gray/300 text-gray/500 placeholder-gray-400  sm:text-sm rounded-lg block w-full py-2 px-3 text-14 outline-none ${inputClassName}`}
+          sx={{
+            color: COLORS.gray500,
+            fontSize: '14px',
+            padding: 0,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+            },
+            ' input': {
+              padding: '8px 12px',
+            },
+          }}
+          fullWidth
           {...register(id, validate)}
         />
         {errors[id] && (

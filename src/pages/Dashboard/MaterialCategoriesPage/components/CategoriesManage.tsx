@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import COLORS from '../../../../utils/colors';
-import InputPrimary from '../../../../components/Input/InputPrimary';
+import InputSearch from '../../../../components/Input/InputSearch';
 import useSearchQuery from '../../../../hooks/useSearchQuery';
 
 import CategoriesTable from './CategoriesTable';
@@ -36,7 +36,7 @@ const CategoriesManage = () => {
         justifyContent="space-between"
       >
         <Box>
-          <InputPrimary
+          <InputSearch
             value={searchQuery}
             onSearch={handleOnSearch}
             onChange={(e) => setSearchQuery(e.target.value)}
