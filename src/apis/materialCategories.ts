@@ -73,3 +73,9 @@ export const updateMaterialCategoryAPI = async (
     },
   });
 };
+
+export const deleteMaterialCategoriesAPI = (ids: string[]) =>
+  axios({
+    url: `/cms/material_categories/bulk/${ids}`,
+    method: 'delete',
+  });

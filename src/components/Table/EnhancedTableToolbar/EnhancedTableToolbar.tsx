@@ -5,18 +5,27 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import COLORS from '../../../utils/colors';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { toast } from 'react-toastify';
+
 import { alpha } from '@mui/material/styles';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleDeleteAll?: () => void;
   rowCount: number;
-  selected: number[] | string[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, rowCount, onSelectAllClick, selected } = props;
+  const {
+    numSelected,
+    rowCount,
+    onSelectAllClick,
+    handleDeleteAll = () => {},
+  } = props;
+
+  const handleDelete = () => {
+    handleDeleteAll();
+  };
   return (
     <Toolbar
       sx={{
@@ -52,7 +61,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         >
           {numSelected} selected
           <Tooltip title="Delete all">
-            <Button sx={{ ml: 2 }} onClick={() => toast(`${selected}`)}>
+            <Button sx={{ ml: 2 }} onClick={handleDelete}>
               <DeleteOutlineIcon sx={{ color: COLORS.gray600 }} />
             </Button>
           </Tooltip>

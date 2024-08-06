@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { category } from './CategoriesManage';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -15,17 +15,16 @@ import { pencilIcon, trashIcon } from '../../../../assets';
 import IconButton from '@mui/material/IconButton';
 import EnhancedTablePagination from '../../../../components/Table/EnhancedTablePagination/EnhancedTablePagination';
 import {
+  deleteMaterialCategoriesAPI,
   deleteMaterialCategoryAPI,
   getMaterialCategoriesAPI,
 } from '../../../../apis/materialCategories';
 import useSearchQuery from '../../../../hooks/useSearchQuery';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@mui/material/Modal';
-import { LoadingButton } from '@mui/lab';
-import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 import TableSkeleton from '../../../../components/Sekeletons/TableSkeleton';
 import usePaging from '../../../../hooks/usePaging';
+import ModalDanger from '../../../../components/Modal/ModalDanger';
 
 interface Data {
   id: number;
@@ -79,7 +78,9 @@ const CategoriesTable = () => {
   const [categories, setCategories] = useState<category[]>([]);
   const [countCategories, setCountCategories] = useState<number>(0);
   const [open, setOpen] = useState(false);
+  const [openModalDeleteAll, setOpenModalDeleteAll] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  // const [loadingDeleteCategories, setLoadingDeleteCategories] = useState(false);
   const [loading, setLoading] = useState(false);
   const { searchQuery } = useSearchQuery();
   const [idDelete, setIdDelete] = useState('');
@@ -107,6 +108,7 @@ const CategoriesTable = () => {
 
   const handleDelete = async (id: string) => {
     try {
+      setLoadingDelete(true);
       await deleteMaterialCategoryAPI(id);
       setLoadingDelete(false);
       setOpen(false);
@@ -118,23 +120,28 @@ const CategoriesTable = () => {
     }
   };
 
-  useEffect(() => {
-    if (loadingDelete) {
-      console.log('render......1');
-      handleDelete(idDelete);
+  const handleDeleteCategories = async (selected: string[]) => {
+    try {
+      await deleteMaterialCategoriesAPI(selected);
+      setLoadingDelete(false);
+      setLoading(true);
+      setOpenModalDeleteAll(false);
+      setSelected([]);
+      toast('🔔 Deleted successfully!!');
+    } catch (err) {
+      setLoadingDelete(false);
+      toast('Deleted fail!');
     }
-  }, [idDelete, loadingDelete]);
+  };
 
   useEffect(() => {
     if (loading) {
-      console.log('render......2');
       const offset = (page - 1) * limit;
       loadMaterialCategories(searchQuery, offset);
     }
   }, [searchQuery, page, limit, loading, setLoading]);
 
   useEffect(() => {
-    console.log('render......3');
     setLoading(true);
     loadMaterialCategories(searchQuery, 0);
   }, [searchQuery]);
@@ -190,7 +197,7 @@ const CategoriesTable = () => {
             numSelected={selected.length}
             onSelectAllClick={handleSelectAllClick}
             rowCount={categories.length}
-            selected={selected}
+            handleDeleteAll={() => setOpenModalDeleteAll(true)}
           />
 
           <TableContainer>
@@ -313,54 +320,22 @@ const CategoriesTable = () => {
             />
           </Box>
         </Paper>
-        <Modal
+        <ModalDanger
+          content="Are you sure want to delete?"
+          key={Math.random()}
+          loading={loadingDelete}
           open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <div className="absolute top-1/2 left-1/2 bg-white w-full max-w-[400px] min-h-[100px] rounded-[16px] -translate-x-1/2 -translate-y-1/2 py-6 px-4">
-            <div className="flex flex-col gap-y-6">
-              <p className="font-bold text-18 text-gray/600">Delete</p>
-              <p className="font-bold text-14 text-gray/500">
-                Are you sure want to delete?
-              </p>
-              <div className="flex justify-end gap-2 ">
-                <LoadingButton
-                  loading={loadingDelete}
-                  variant="contained"
-                  sx={{
-                    px: '12px',
-                    py: '5px',
-                    borderRadius: 2,
-                    bgcolor: COLORS.red500,
-                    fontWeight: 'bold',
-                    color: 'white',
-                    textTransform: 'capitalize',
-                  }}
-                  onClick={() => setLoadingDelete(true)}
-                >
-                  Delete
-                </LoadingButton>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    px: '12px',
-                    py: '5px',
-                    borderRadius: 2,
-                    border: `1px solid ${COLORS.gray300} `,
-                    fontWeight: 'bold',
-                    color: COLORS.gray600,
-                    textTransform: 'capitalize',
-                  }}
-                  onClick={() => setOpen(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Modal>
+          setOpen={setOpen}
+          handleDelete={() => handleDelete(idDelete)}
+        />
+        <ModalDanger
+          content={'You want to delete the selected items?'}
+          key={Math.random()}
+          loading={loadingDelete}
+          open={openModalDeleteAll}
+          setOpen={setOpenModalDeleteAll}
+          handleDelete={() => handleDeleteCategories(selected)}
+        />
       </Box>
     </>
   );

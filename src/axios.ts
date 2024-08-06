@@ -84,7 +84,6 @@ instance.interceptors.response.use(
         }
         return instance(originalConfig);
       } catch (err) {
-        console.log('ahuhu');
         localStorage.removeItem('laravel');
         window.location.href = '/login';
         return Promise.reject(err);
