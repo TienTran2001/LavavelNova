@@ -8,9 +8,8 @@ import InputForm from '../../../../components/Input/InputForm';
 import SelectForm from '../../../../components/Input/SelectForm';
 import { priceType } from '../../../../utils/constants';
 import COLORS from '../../../../utils/colors';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
-import { getMaterialCategoryAPI } from '../../../../apis/materialCategories';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export interface IFormInput {
   image?: File[];
@@ -20,16 +19,20 @@ export interface IFormInput {
 
 interface IProps {
   loading: boolean;
+  category?: {
+    image: string;
+    name: string;
+    price_type: string;
+  } | null;
   type?: 'create' | 'update';
-  handleOnSubmit: (data: IFormInput) => void;
-  setFormReset?: (reset: () => void) => void;
+  handleOnSubmit: (data: IFormInput, reset?: () => void) => void;
 }
 
 const FormActionCategory = ({
+  category,
   loading,
   type = 'create',
   handleOnSubmit,
-  setFormReset,
 }: IProps) => {
   const {
     register,
@@ -39,33 +42,20 @@ const FormActionCategory = ({
     reset,
     control,
   } = useForm<IFormInput>();
-  const { id } = useParams();
   const navigate = useNavigate();
-
   const [imageUrl, setImageUrl] = useState('');
 
-  const getDetailCategory = useCallback(
-    async (id: string) => {
-      const response = await getMaterialCategoryAPI(id);
-      const { data } = response;
-
-      setValue('name', data.name);
-      setValue('price_type', data.price_type);
-      setImageUrl(data.image);
-    },
-    [setValue]
-  );
-
   useEffect(() => {
-    if (setFormReset) setFormReset(() => reset);
-  }, [reset, setFormReset]);
+    if (category) {
+      setValue('name', category.name);
+      setValue('price_type', category.price_type);
+      setImageUrl(category.image);
+    }
+  }, [category, setValue]);
 
-  useEffect(() => {
-    if (id) getDetailCategory(id);
-  }, [id, getDetailCategory]);
   return (
     <div>
-      <form onSubmit={handleSubmit(handleOnSubmit)}>
+      <form onSubmit={handleSubmit((data) => handleOnSubmit(data, reset))}>
         <div className="flex gap-x-6">
           <div className="w-1/3 ">
             <div className="px-8 py-5 bg-white shadow-sm rounded-[28px] ">

@@ -1,121 +1,101 @@
-import React, { useEffect, useState } from 'react';
-import { category } from './CategoriesManage';
+import { useCallback, useEffect, useState } from 'react';
+import EnhancedTableToolbar from '../../../../components/Table/EnhancedTableToolbar/EnhancedTableToolbar';
+
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import EnhancedTableToolbar from '../../../../components/Table/EnhancedTableToolbar/EnhancedTableToolbar';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
-import COLORS from '../../../../utils/colors';
-import EnhancedTableHead from '../../../../components/Table/EnhancedTableHead/EnhancedTableHead';
 import TableBody from '@mui/material/TableBody';
+import IconButton from '@mui/material/IconButton';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Checkbox from '@mui/material/Checkbox';
+
+import EnhancedTableHead from '../../../../components/Table/EnhancedTableHead/EnhancedTableHead';
 import { pencilIcon, trashIcon } from '../../../../assets';
-import IconButton from '@mui/material/IconButton';
+
+import { calculateItemIndexInTable } from '../../../../utils/constants';
+import COLORS from '../../../../utils/colors';
 import EnhancedTablePagination from '../../../../components/Table/EnhancedTablePagination/EnhancedTablePagination';
+
 import {
   deleteMaterialCategoriesAPI,
   deleteMaterialCategoryAPI,
   getMaterialCategoriesAPI,
 } from '../../../../apis/materialCategories';
+
 import useSearchQuery from '../../../../hooks/useSearchQuery';
+import { headCellsCategoriesTable } from '../../../../utils/tableCategories';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import TableSkeleton from '../../../../components/Sekeletons/TableSkeleton';
 import usePaging from '../../../../hooks/usePaging';
 import ModalDanger from '../../../../components/Modal/ModalDanger';
+import useSelectItemTable from '../../../../hooks/useSelectItemTable';
+import { IDataTable } from '../type';
+import { CategoriesSkeleton } from './skeletonLoading';
 
-interface Data {
-  id: number;
-  image: string;
-  name: string;
-  price_type: string;
+interface IDelete<T> {
+  id: T;
+  open: boolean;
+  loading: boolean;
 }
-
-interface HeadCell {
-  disablePadding: boolean;
-  id?: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: HeadCell[] = [
-  {
-    id: 'id',
-    numeric: false,
-    disablePadding: true,
-    label: 'NO',
-  },
-  {
-    id: 'image',
-    numeric: false,
-    disablePadding: false,
-    label: 'Image',
-  },
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: false,
-    label: 'Name',
-  },
-  {
-    id: 'price_type',
-    numeric: false,
-    disablePadding: false,
-    label: 'Price type',
-  },
-  {
-    numeric: false,
-    disablePadding: false,
-    label: '',
-  },
-];
 
 const CategoriesTable = () => {
   const navigate = useNavigate();
-  const [selected, setSelected] = React.useState<string[]>([]);
-  const [categories, setCategories] = useState<category[]>([]);
-  const [countCategories, setCountCategories] = useState<number>(0);
-  const [open, setOpen] = useState(false);
-  const [openModalDeleteAll, setOpenModalDeleteAll] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  // const [loadingDeleteCategories, setLoadingDeleteCategories] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { searchQuery } = useSearchQuery();
-  const [idDelete, setIdDelete] = useState('');
-  const limit = 5;
   const { page } = usePaging();
+  const limit = 5;
 
-  const actionRefs = React.useRef<HTMLDivElement[]>([]);
+  const {
+    selected,
+    isSelected,
+    setSelected,
+    handleClickSelect,
+    handleSelectAllClick,
+  } = useSelectItemTable();
 
-  const setActionRef = (element: HTMLDivElement, index: number) => {
-    actionRefs.current[index] = element;
-  };
+  const [data, setData] = useState<IDataTable>({
+    count: 0,
+    categories: [],
+    loading: false,
+  });
 
-  const handleOpenModel = (id: string) => {
-    setOpen(true);
-    setIdDelete(id);
-  };
+  const [deleteCategory, setDeleteCategory] = useState<IDelete<string>>({
+    id: '',
+    open: false,
+    loading: false,
+  });
 
-  const loadMaterialCategories = async (name: string, offset: number = 0) => {
-    const result = await getMaterialCategoriesAPI({ name, offset });
-    setLoading(false);
-    const { results, count } = result.data;
-    setCategories(results);
-    setCountCategories(count);
-  };
+  const [deleteCategories, setDeleteCategories] = useState<IDelete<string[]>>({
+    id: [],
+    open: false,
+    loading: false,
+  });
+
+  const loadMaterialCategories = useCallback(
+    async (name: string, offset: number = 0) => {
+      try {
+        const result = await getMaterialCategoriesAPI({ name, offset });
+        setData((prev) => ({ ...prev, loading: false }));
+        const { results, count } = result.data;
+        setData({ count: count, categories: results, loading: false });
+        setSelected([]);
+      } catch (err) {
+        setData((prev) => ({ ...prev, loading: false }));
+      }
+    },
+    [setSelected]
+  );
 
   const handleDelete = async (id: string) => {
     try {
-      setLoadingDelete(true);
+      setDeleteCategory((prev) => ({ ...prev, loading: true }));
       await deleteMaterialCategoryAPI(id);
-      setLoadingDelete(false);
-      setOpen(false);
-      setLoading(true);
+      setDeleteCategory((prev) => ({ ...prev, loading: false, open: false }));
+      setData((prev) => ({ ...prev, loading: true }));
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
-      setLoadingDelete(false);
+      setDeleteCategory((prev) => ({ ...prev, loading: false, open: false }));
       toast(`⚠️ Deleted error!!!`);
     }
   };
@@ -123,71 +103,50 @@ const CategoriesTable = () => {
   const handleDeleteCategories = async (selected: string[]) => {
     try {
       await deleteMaterialCategoriesAPI(selected);
-      setLoadingDelete(false);
-      setLoading(true);
-      setOpenModalDeleteAll(false);
-      setSelected([]);
+      setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
+      setData((prev) => ({ ...prev, loading: true }));
       toast('🔔 Deleted successfully!!');
     } catch (err) {
-      setLoadingDelete(false);
+      setDeleteCategories((prev) => ({ ...prev, loading: false }));
       toast('Deleted fail!');
     }
   };
 
   useEffect(() => {
-    if (loading) {
+    let ignore = false;
+
+    const fetchCategories = async () => {
       const offset = (page - 1) * limit;
-      loadMaterialCategories(searchQuery, offset);
-    }
-  }, [searchQuery, page, limit, loading, setLoading]);
+      try {
+        const result = await getMaterialCategoriesAPI({
+          name: searchQuery,
+          offset,
+        });
+        if (!ignore) {
+          const { results, count } = result.data;
+          setData({ count: count, categories: results, loading: false });
+          setSelected([]);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setData((prev) => ({ ...prev, loading: false }));
+        }
+      }
+    };
 
-  useEffect(() => {
-    setLoading(true);
-    loadMaterialCategories(searchQuery, 0);
-  }, [searchQuery]);
+    fetchCategories();
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = categories.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (
-    id: string,
-    e: React.MouseEvent<HTMLDivElement>,
-    index: number
-  ) => {
-    // Kiểm tra hành động click
-    if (
-      actionRefs.current[index] &&
-      actionRefs.current[index].contains(e.target as Node)
-    ) {
-      return;
-    }
-
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
-  const isSelected = (id: string) => selected.indexOf(id) !== -1;
+    return () => {
+      ignore = true;
+    };
+  }, [
+    searchQuery,
+    page,
+    limit,
+    data.loading,
+    loadMaterialCategories,
+    setSelected,
+  ]);
 
   return (
     <>
@@ -195,13 +154,15 @@ const CategoriesTable = () => {
         <Paper sx={{ width: '100%', mb: 2 }}>
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onSelectAllClick={handleSelectAllClick}
-            rowCount={categories.length}
-            handleDeleteAll={() => setOpenModalDeleteAll(true)}
+            onSelectAllClick={(e) => handleSelectAllClick(e, data.categories)}
+            rowCount={data.categories.length}
+            handleDeleteAll={() =>
+              setDeleteCategories((prev) => ({ ...prev, open: true }))
+            }
           />
 
           <TableContainer>
-            {!loading ? (
+            {!data.loading ? (
               <Table
                 sx={{
                   minWidth: 750,
@@ -212,17 +173,17 @@ const CategoriesTable = () => {
               >
                 <EnhancedTableHead
                   numSelected={selected.length}
-                  headCells={headCells}
+                  headCells={headCellsCategoriesTable}
                 />
                 <TableBody>
-                  {categories.map((row, index) => {
+                  {data.categories.map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                       <TableRow
                         hover
-                        onClick={(e) => handleClick(row.id, e, index)}
+                        onClick={() => handleClickSelect(row.id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
@@ -247,7 +208,7 @@ const CategoriesTable = () => {
                           padding="none"
                           sx={{ fontWeight: 800, color: COLORS.primary500 }}
                         >
-                          {index + 1 + limit * (page - 1)}
+                          {calculateItemIndexInTable(index, limit, page)}
                         </TableCell>
 
                         <TableCell align="left">
@@ -274,12 +235,7 @@ const CategoriesTable = () => {
                             </span>
                           )}
                         </TableCell>
-                        <TableCell
-                          ref={(element: HTMLDivElement) =>
-                            setActionRef(element, index)
-                          }
-                          align="left"
-                        >
+                        <TableCell align="left">
                           <Box
                             display="flex"
                             alignItems="center"
@@ -293,7 +249,16 @@ const CategoriesTable = () => {
                             >
                               <img src={pencilIcon} alt="pencil icon" />
                             </IconButton>
-                            <IconButton onClick={() => handleOpenModel(row.id)}>
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteCategory((prev) => ({
+                                  ...prev,
+                                  id: row.id,
+                                  open: true,
+                                }));
+                              }}
+                            >
                               <img src={trashIcon} alt="trash icon" />
                             </IconButton>
                           </Box>
@@ -304,36 +269,33 @@ const CategoriesTable = () => {
                 </TableBody>
               </Table>
             ) : (
-              <>
-                <TableSkeleton />
-                <TableSkeleton />
-                <TableSkeleton />
-                <TableSkeleton />
-              </>
+              <CategoriesSkeleton />
             )}
           </TableContainer>
           <Box>
             <EnhancedTablePagination
-              count={countCategories}
+              count={data.count}
               limit={limit}
-              setLoading={setLoading}
+              setLoading={() => setData((prev) => ({ ...prev, loading: true }))}
             />
           </Box>
         </Paper>
         <ModalDanger
           content="Are you sure want to delete?"
-          key={Math.random()}
-          loading={loadingDelete}
-          open={open}
-          setOpen={setOpen}
-          handleDelete={() => handleDelete(idDelete)}
+          loading={deleteCategory.loading}
+          open={deleteCategory.open}
+          handleClose={() =>
+            setDeleteCategory((prev) => ({ ...prev, open: false }))
+          }
+          handleDelete={() => handleDelete(deleteCategory.id)}
         />
         <ModalDanger
-          content={'You want to delete the selected items?'}
-          key={Math.random()}
-          loading={loadingDelete}
-          open={openModalDeleteAll}
-          setOpen={setOpenModalDeleteAll}
+          content={'You want to delete the selected material categories?'}
+          loading={deleteCategories.loading}
+          open={deleteCategories.open}
+          handleClose={() =>
+            setDeleteCategories((prev) => ({ ...prev, open: false }))
+          }
           handleDelete={() => handleDeleteCategories(selected)}
         />
       </Box>

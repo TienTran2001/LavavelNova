@@ -9,6 +9,14 @@ export const priceType = {
   },
 };
 
+export const calculateItemIndexInTable = (
+  index: number,
+  limit: number,
+  page: number
+) => {
+  return index + 1 + limit * (page - 1);
+};
+
 export const urlToFile = async (
   url: string,
   filename: string

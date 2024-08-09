@@ -5,17 +5,17 @@ import usePaging from '../../../hooks/usePaging';
 interface IProps {
   count: number;
   limit: number;
-  setLoading: (loading: boolean) => void;
+  setLoading: () => void;
 }
 
 const EnhancedTablePagination = ({ count, limit, setLoading }: IProps) => {
   const { prevClick, nextClick, page } = usePaging();
   const handleNext = () => {
-    setLoading(true);
+    setLoading();
     nextClick();
   };
   const handleBack = () => {
-    setLoading(true);
+    setLoading();
     prevClick();
   };
   return (

@@ -33,7 +33,7 @@ const InputFile = <T extends FieldValues>({
   labelClassName = '',
   imageUrl = '',
 }: IProps<T>) => {
-  const [filePreview, setFilePreview] = useState<string | null>(imageUrl);
+  const [filePreview, setFilePreview] = useState<string>(imageUrl || '');
   const [inputKey, setInputKey] = useState(0);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -49,12 +49,20 @@ const InputFile = <T extends FieldValues>({
   };
 
   const handleDeleteImage = () => {
+    console.log('vào xóa ảnh');
     setFilePreview('');
     setInputKey((prevKey) => prevKey + 1);
   };
 
   useEffect(() => {
-    setFilePreview(imageUrl);
+    console.log('vào 1');
+    if (imageUrl === '') {
+      console.log('vào 1-1');
+      handleDeleteImage();
+    } else {
+      console.log('vào 1-2');
+      setFilePreview(imageUrl);
+    }
   }, [imageUrl]);
 
   return (
@@ -133,7 +141,7 @@ const InputFile = <T extends FieldValues>({
       <Modal open={open} onClose={handleClose}>
         <div className="absolute w-3/4 h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
           <img
-            src={filePreview || ''}
+            src={filePreview}
             alt=""
             className="object-contain w-full h-full"
           />

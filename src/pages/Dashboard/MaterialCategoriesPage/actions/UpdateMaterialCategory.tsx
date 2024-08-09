@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { updateMaterialCategoryAPI } from '../../../apis/materialCategories';
 import { toast } from 'react-toastify';
-import FormActionCategory from './components/FormActionCategory';
+import {
+  getMaterialCategoryAPI,
+  updateMaterialCategoryAPI,
+} from '../../../../apis/materialCategories';
+import FormActionCategory from '../components/FormActionCategory';
 
 interface IFormInput {
   image?: File[];
@@ -13,8 +16,12 @@ interface IFormInput {
 const UpdateMaterialCategory = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
-
   const [data, setData] = useState<IFormInput | null>(null);
+  const [category, setCategory] = useState<{
+    image: string;
+    name: string;
+    price_type: string;
+  } | null>(null);
 
   const handleOnSubmit = async (data: IFormInput) => {
     setLoading(true);
@@ -44,6 +51,17 @@ const UpdateMaterialCategory = () => {
       }
     }
   }, [data, handleUpdateCategory, id, loading]);
+
+  const getDetailCategory = useCallback(async (id: string) => {
+    const response = await getMaterialCategoryAPI(id);
+    const { data } = response;
+    setCategory(data);
+  }, []);
+
+  useEffect(() => {
+    if (id) getDetailCategory(id);
+  }, [id, getDetailCategory]);
+
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray/600">
@@ -51,6 +69,7 @@ const UpdateMaterialCategory = () => {
       </h2>
       <div className="mt-[50px]">
         <FormActionCategory
+          category={category}
           loading={loading}
           type="update"
           handleOnSubmit={handleOnSubmit}

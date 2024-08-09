@@ -1,11 +1,12 @@
-// import UserPage from '../pages/Dashboard/UserPage';
 import { Outlet } from 'react-router-dom';
 import { collectionIcon, dashboardIcon } from '../assets';
 import { RouteType } from './type';
 import UsersPage from '../pages/Dashboard/UsersPage/UsersPage';
 import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
-import CreateMaterialCategory from '../pages/Dashboard/MaterialCategoriesPage/CreateMaterialCategory';
-import UpdateMaterialCategory from '../pages/Dashboard/MaterialCategoriesPage/UpdateMaterialCategory';
+import {
+  CreateMaterialCategory,
+  UpdateMaterialCategory,
+} from '../pages/Dashboard/MaterialCategoriesPage/actions';
 
 const appRoutes: RouteType[] = [
   {

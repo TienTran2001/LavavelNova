@@ -6,13 +6,13 @@ interface IProps {
   loading: boolean;
   open: boolean;
   content: string;
-  setOpen: (open: boolean) => void;
+  handleClose: () => void;
   handleDelete?: () => void;
 }
 
 const ModalDanger = ({
   open,
-  setOpen,
+  handleClose,
   content,
   loading,
   handleDelete = () => {},
@@ -20,7 +20,7 @@ const ModalDanger = ({
   return (
     <Modal
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -56,7 +56,7 @@ const ModalDanger = ({
                 color: COLORS.gray600,
                 textTransform: 'capitalize',
               }}
-              onClick={() => setOpen(false)}
+              onClick={handleClose}
             >
               Cancel
             </Button>

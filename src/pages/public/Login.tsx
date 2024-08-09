@@ -93,7 +93,6 @@ const Login = () => {
       <div className="max-w-[450px] p-8 w-full absolute right-0 top-0 bottom-0 bg-white">
         <div className="flex items-center justify-center">
           <img src={logo} alt="logo" className="object-cover w-[50px] h-full" />
-          {/* <img src={brandName} alt="brand name" /> */}
         </div>
         <h2 className="mt-4 text-3xl font-bold text-center">Login</h2>
         <div className="flex flex-col mt-8 gap-y-6">
