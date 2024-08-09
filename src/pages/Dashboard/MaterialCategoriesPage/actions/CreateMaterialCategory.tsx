@@ -1,17 +1,22 @@
+// @react
 import { useCallback, useEffect, useState } from 'react';
-
 import { toast } from 'react-toastify';
-import { addMaterialCategoriesAPI } from '../../../../apis/materialCategories';
-import FormActionCategory, {
-  IFormInput,
-} from '../components/FormActionCategory';
+
+// @apis
+import { addMaterialCategoriesAPI } from '~/apis/materialCategories';
+
+// @components
+import { FormActionCategory } from '../components';
+
+// @types
+import { IFormCategory } from '../type';
 
 const CreateMaterialCategory = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<IFormInput | null>(null);
+  const [data, setData] = useState<IFormCategory | null>(null);
   const [resetForm, setResetForm] = useState<() => void>(() => {});
 
-  const handleOnSubmit = async (data: IFormInput, reset?: () => void) => {
+  const handleOnSubmit = async (data: IFormCategory, reset?: () => void) => {
     setLoading(true);
     if (reset) {
       setResetForm(() => reset);
@@ -20,7 +25,7 @@ const CreateMaterialCategory = () => {
   };
 
   const handleAddCategory = useCallback(
-    async (data: IFormInput) => {
+    async (data: IFormCategory) => {
       try {
         await addMaterialCategoriesAPI(data);
         setLoading(false);

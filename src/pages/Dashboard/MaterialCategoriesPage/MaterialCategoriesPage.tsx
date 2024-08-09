@@ -1,12 +1,20 @@
+// @react
+import { Link } from 'react-router-dom';
+
+// @mui
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import { Link } from 'react-router-dom';
-import useSearchQuery from '../../../hooks/useSearchQuery';
-import COLORS from '../../../utils/colors';
-import InputSearch from '../../../components/Input/InputSearch';
+// @components
+import InputSearch from '~/components/Input/InputSearch';
 import CategoriesTable from './components/CategoriesTable';
+
+// @hooks
+import useSearchQuery from '~/hooks/useSearchQuery';
+
+// @utils
+import COLORS from '~/utils/colors';
 
 const MaterialCategoriesPage = () => {
   const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();

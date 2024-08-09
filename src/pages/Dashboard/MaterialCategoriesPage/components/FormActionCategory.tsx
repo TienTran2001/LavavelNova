@@ -1,21 +1,24 @@
+// @react
 import { useForm } from 'react-hook-form';
-import { LoadingButton } from '@mui/lab';
-
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import InputFile from '../../../../components/Input/InputFile';
-import InputForm from '../../../../components/Input/InputForm';
-import SelectForm from '../../../../components/Input/SelectForm';
-import { priceType } from '../../../../utils/constants';
-import COLORS from '../../../../utils/colors';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-export interface IFormInput {
-  image?: File[];
-  name: string;
-  price_type: string;
-}
+// @mui
+import { LoadingButton } from '@mui/lab';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+
+// @component
+import InputFile from '~/components/Input/InputFile';
+import InputForm from '~/components/Input/InputForm';
+import SelectForm from '~/components/Input/SelectForm';
+
+// @utils
+import { priceType } from '~/utils/constants';
+import COLORS from '~/utils/colors';
+
+// @types
+import { IFormCategory } from '../type';
 
 interface IProps {
   loading: boolean;
@@ -25,7 +28,7 @@ interface IProps {
     price_type: string;
   } | null;
   type?: 'create' | 'update';
-  handleOnSubmit: (data: IFormInput, reset?: () => void) => void;
+  handleOnSubmit: (data: IFormCategory, reset?: () => void) => void;
 }
 
 const FormActionCategory = ({
@@ -41,7 +44,7 @@ const FormActionCategory = ({
     setValue,
     reset,
     control,
-  } = useForm<IFormInput>();
+  } = useForm<IFormCategory>();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState('');
 

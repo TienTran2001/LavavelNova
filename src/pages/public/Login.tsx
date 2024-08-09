@@ -1,17 +1,23 @@
+// @react
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-toastify';
-import { loginAPI } from '../../apis/auth';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { useForm } from 'react-hook-form';
-import InputForm from '../../components/Input/InputForm';
-import logo from '../../../public/logo.svg';
 
-interface ILogin {
-  email: string;
-  password: string;
-}
+// @store
+import { useUserStore } from '~/store/useUserStore';
+
+// @mui
+import LoadingButton from '@mui/lab/LoadingButton';
+
+// @apis
+import { loginAPI } from '~/apis/auth';
+
+// @components
+import InputForm from '~/components/Input/InputForm';
+
+// @types
+import { ILogin } from './type';
 
 const Login = () => {
   const [valueLogin, setValueLogin] = useState<ILogin>({
@@ -92,7 +98,11 @@ const Login = () => {
     <div className="fixed inset-0 bg-primary/500">
       <div className="max-w-[450px] p-8 w-full absolute right-0 top-0 bottom-0 bg-white">
         <div className="flex items-center justify-center">
-          <img src={logo} alt="logo" className="object-cover w-[50px] h-full" />
+          <img
+            src="/logo.svg"
+            alt="logo"
+            className="object-cover w-[50px] h-full"
+          />
         </div>
         <h2 className="mt-4 text-3xl font-bold text-center">Login</h2>
         <div className="flex flex-col mt-8 gap-y-6">

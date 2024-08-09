@@ -1,12 +1,19 @@
+// @react
 import { Outlet } from 'react-router-dom';
-import { collectionIcon, dashboardIcon } from '../assets';
+
+//  @types
 import { RouteType } from './type';
-import UsersPage from '../pages/Dashboard/UsersPage/UsersPage';
+
+// @page
 import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
 import {
   CreateMaterialCategory,
   UpdateMaterialCategory,
-} from '../pages/Dashboard/MaterialCategoriesPage/actions';
+} from '~/pages/Dashboard/MaterialCategoriesPage/actions';
+import UsersPage from '~/pages/Dashboard/UsersPage/UsersPage';
+
+// @assets
+import { collectionIcon, dashboardIcon } from '~/assets';
 
 const appRoutes: RouteType[] = [
   {

@@ -1,4 +1,4 @@
-import TableSkeleton from '../../../../../components/Sekeletons/TableSkeleton';
+import TableSkeleton from '~/components/Sekeletons/TableSkeleton';
 
 export default function CategoriesSkeleton() {
   return (

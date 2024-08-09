@@ -1,6 +1,9 @@
+// @react
 import { useCallback, useEffect, useState } from 'react';
-import EnhancedTableToolbar from '../../../../components/Table/EnhancedTableToolbar/EnhancedTableToolbar';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
+// @mui
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
@@ -11,34 +14,37 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Checkbox from '@mui/material/Checkbox';
 
-import EnhancedTableHead from '../../../../components/Table/EnhancedTableHead/EnhancedTableHead';
-import { pencilIcon, trashIcon } from '../../../../assets';
+// @components
+import {
+  EnhancedTableHead,
+  EnhancedTablePagination,
+  EnhancedTableToolbar,
+} from '~/components/Table';
+import ModalDanger from '~/components/Modal/ModalDanger';
+import { CategoriesSkeleton } from './skeletonLoading';
 
-import { calculateItemIndexInTable } from '../../../../utils/constants';
-import COLORS from '../../../../utils/colors';
-import EnhancedTablePagination from '../../../../components/Table/EnhancedTablePagination/EnhancedTablePagination';
+// @hooks
+import usePaging from '~/hooks/usePaging';
+import useSearchQuery from '~/hooks/useSearchQuery';
+import useSelectItemTable from '~/hooks/useSelectItemTable';
 
+// @utils
+import COLORS from '~/utils/colors';
+import { calculateItemIndexInTable } from '~/utils/constants';
+import { headCellsCategoriesTable } from '~/utils/tableCategories';
+
+// @apis
 import {
   deleteMaterialCategoriesAPI,
   deleteMaterialCategoryAPI,
   getMaterialCategoriesAPI,
-} from '../../../../apis/materialCategories';
+} from '~/apis/materialCategories';
 
-import useSearchQuery from '../../../../hooks/useSearchQuery';
-import { headCellsCategoriesTable } from '../../../../utils/tableCategories';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import usePaging from '../../../../hooks/usePaging';
-import ModalDanger from '../../../../components/Modal/ModalDanger';
-import useSelectItemTable from '../../../../hooks/useSelectItemTable';
-import { IDataTable } from '../type';
-import { CategoriesSkeleton } from './skeletonLoading';
+// @assets
+import { pencilIcon, trashIcon } from '~/assets';
 
-interface IDelete<T> {
-  id: T;
-  open: boolean;
-  loading: boolean;
-}
+// types
+import { IDataTable, IDeleteCategory } from '../type';
 
 const CategoriesTable = () => {
   const navigate = useNavigate();
@@ -60,13 +66,17 @@ const CategoriesTable = () => {
     loading: false,
   });
 
-  const [deleteCategory, setDeleteCategory] = useState<IDelete<string>>({
-    id: '',
-    open: false,
-    loading: false,
-  });
+  const [deleteCategory, setDeleteCategory] = useState<IDeleteCategory<string>>(
+    {
+      id: '',
+      open: false,
+      loading: false,
+    }
+  );
 
-  const [deleteCategories, setDeleteCategories] = useState<IDelete<string[]>>({
+  const [deleteCategories, setDeleteCategories] = useState<
+    IDeleteCategory<string[]>
+  >({
     id: [],
     open: false,
     loading: false,
