@@ -1,5 +1,5 @@
 // @react
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -43,7 +43,7 @@ import {
 // @assets
 import { pencilIcon, trashIcon } from '~/assets';
 
-// types
+// @types
 import { IDataTable, IDeleteCategory } from '../type';
 
 const CategoriesTable = () => {
@@ -60,6 +60,7 @@ const CategoriesTable = () => {
     handleSelectAllClick,
   } = useSelectItemTable();
 
+  const [reload, setReload] = useState(false);
   const [data, setData] = useState<IDataTable>({
     count: 0,
     categories: [],
@@ -82,30 +83,19 @@ const CategoriesTable = () => {
     loading: false,
   });
 
-  const loadMaterialCategories = useCallback(
-    async (name: string, offset: number = 0) => {
-      try {
-        const result = await getMaterialCategoriesAPI({ name, offset });
-        setData((prev) => ({ ...prev, loading: false }));
-        const { results, count } = result.data;
-        setData({ count: count, categories: results, loading: false });
-        setSelected([]);
-      } catch (err) {
-        setData((prev) => ({ ...prev, loading: false }));
-      }
-    },
-    [setSelected]
-  );
-
   const handleDelete = async (id: string) => {
     try {
       setDeleteCategory((prev) => ({ ...prev, loading: true }));
       await deleteMaterialCategoryAPI(id);
       setDeleteCategory((prev) => ({ ...prev, loading: false, open: false }));
-      setData((prev) => ({ ...prev, loading: true }));
+      setReload(true);
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
-      setDeleteCategory((prev) => ({ ...prev, loading: false, open: false }));
+      setDeleteCategory((prev) => ({
+        ...prev,
+        loading: false,
+        open: false,
+      }));
       toast(`⚠️ Deleted error!!!`);
     }
   };
@@ -114,24 +104,27 @@ const CategoriesTable = () => {
     try {
       await deleteMaterialCategoriesAPI(selected);
       setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
-      setData((prev) => ({ ...prev, loading: true }));
+      setReload(true);
       toast('🔔 Deleted successfully!!');
     } catch (err) {
-      setDeleteCategories((prev) => ({ ...prev, loading: false }));
+      setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
       toast('Deleted fail!');
     }
   };
 
   useEffect(() => {
+    console.log('vào ');
     let ignore = false;
 
     const fetchCategories = async () => {
       const offset = (page - 1) * limit;
       try {
+        setData((prev) => ({ ...prev, loading: true }));
         const result = await getMaterialCategoriesAPI({
           name: searchQuery,
           offset,
         });
+
         if (!ignore) {
           const { results, count } = result.data;
           setData({ count: count, categories: results, loading: false });
@@ -149,14 +142,7 @@ const CategoriesTable = () => {
     return () => {
       ignore = true;
     };
-  }, [
-    searchQuery,
-    page,
-    limit,
-    data.loading,
-    loadMaterialCategories,
-    setSelected,
-  ]);
+  }, [searchQuery, page, limit, setSelected, reload]);
 
   return (
     <>
