@@ -11,28 +11,49 @@ import { FormActionCategory } from '../components';
 // @types
 import { IFormCategory } from '../type';
 
+interface IMCategory {
+  data: IFormCategory;
+  loading: boolean;
+}
+
+const initialState = {
+  data: {
+    image: [],
+    name: '',
+    price_type: '',
+  },
+  loading: false,
+};
+
 const CreateMaterialCategory = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<IFormCategory | null>(null);
+  const [category, setCategory] = useState<IMCategory>(initialState);
   const [resetForm, setResetForm] = useState<() => void>(() => {});
 
-  const handleOnSubmit = async (data: IFormCategory, reset?: () => void) => {
-    setLoading(true);
-    if (reset) {
-      setResetForm(() => reset);
+  const handleOnSubmit = async (
+    data: IFormCategory,
+    resetOption?: {
+      reset: () => void;
+      setResetImage: (value: boolean) => void;
     }
-    setData(data);
+  ) => {
+    setCategory((prev) => ({ ...prev, loading: true }));
+    if (resetOption) {
+      const { reset, setResetImage } = resetOption;
+      setResetForm(() => reset); // callback to use reset form
+      setResetImage(true); // clear link img
+    }
+    setCategory((prev) => ({ ...prev, data }));
   };
 
   const handleAddCategory = useCallback(
     async (data: IFormCategory) => {
       try {
         await addMaterialCategoriesAPI(data);
-        setLoading(false);
+        setCategory((prev) => ({ ...prev, loading: false }));
         toast('🔔 Created successfully!!');
         resetForm();
       } catch (err) {
-        setLoading(false);
+        setCategory((prev) => ({ ...prev, loading: false }));
         toast('Created fail!!!');
       }
     },
@@ -40,12 +61,12 @@ const CreateMaterialCategory = () => {
   );
 
   useEffect(() => {
-    if (loading) {
-      if (data) {
-        handleAddCategory(data);
+    if (category.loading) {
+      if (category.data) {
+        handleAddCategory(category.data);
       }
     }
-  }, [data, handleAddCategory, loading]);
+  }, [category.data, category.loading, handleAddCategory]);
 
   return (
     <div>
@@ -54,7 +75,7 @@ const CreateMaterialCategory = () => {
       </h2>
       <div className="mt-[50px]">
         <FormActionCategory
-          loading={loading}
+          loading={category.loading}
           type="create"
           handleOnSubmit={handleOnSubmit}
         />

@@ -28,7 +28,13 @@ interface IProps {
     price_type: string;
   } | null;
   type?: 'create' | 'update';
-  handleOnSubmit: (data: IFormCategory, reset?: () => void) => void;
+  handleOnSubmit: (
+    data: IFormCategory,
+    resetOption?: {
+      reset: () => void;
+      setResetImage: (value: boolean) => void;
+    }
+  ) => void;
 }
 
 const FormActionCategory = ({
@@ -46,7 +52,9 @@ const FormActionCategory = ({
     control,
   } = useForm<IFormCategory>();
   const navigate = useNavigate();
+
   const [imageUrl, setImageUrl] = useState('');
+  const [resetImage, setResetImage] = useState(false);
 
   useEffect(() => {
     if (category) {
@@ -58,11 +66,19 @@ const FormActionCategory = ({
 
   return (
     <div>
-      <form onSubmit={handleSubmit((data) => handleOnSubmit(data, reset))}>
+      <form
+        onSubmit={handleSubmit((data) =>
+          handleOnSubmit(data, {
+            reset,
+            setResetImage,
+          })
+        )}
+      >
         <div className="flex gap-x-6">
           <div className="w-1/3 ">
             <div className="px-8 py-5 bg-white shadow-sm rounded-[28px] ">
               <InputFile
+                resetImage={resetImage}
                 label="Image*"
                 imageUrl={imageUrl}
                 register={register}

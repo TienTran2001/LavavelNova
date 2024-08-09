@@ -1,3 +1,4 @@
+// @react
 import { useEffect, useState } from 'react';
 import {
   FieldErrors,
@@ -6,6 +7,8 @@ import {
   RegisterOptions,
   UseFormRegister,
 } from 'react-hook-form';
+
+// @mui
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CloseIcon from '@mui/icons-material/Close';
@@ -21,9 +24,11 @@ interface IProps<T extends FieldValues> {
   validate?: RegisterOptions<T, Path<T>>;
   labelClassName?: string;
   imageUrl?: string;
+  resetImage?: boolean;
 }
 
 const InputFile = <T extends FieldValues>({
+  resetImage = false,
   containerClassName,
   label,
   id,
@@ -55,15 +60,12 @@ const InputFile = <T extends FieldValues>({
   };
 
   useEffect(() => {
-    console.log('vào 1');
-    if (imageUrl === '') {
-      console.log('vào 1-1');
+    if (resetImage) {
       handleDeleteImage();
     } else {
-      console.log('vào 1-2');
       setFilePreview(imageUrl);
     }
-  }, [imageUrl]);
+  }, [imageUrl, resetImage]);
 
   return (
     <>
