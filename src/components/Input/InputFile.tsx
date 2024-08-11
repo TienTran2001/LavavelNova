@@ -54,7 +54,6 @@ const InputFile = <T extends FieldValues>({
   };
 
   const handleDeleteImage = () => {
-    console.log('vào xóa ảnh');
     setFilePreview('');
     setInputKey((prevKey) => prevKey + 1);
   };
@@ -94,7 +93,7 @@ const InputFile = <T extends FieldValues>({
           {!filePreview ? (
             <label
               htmlFor={id}
-              className="inline-block w-full cursor-pointer bg-gray/100 rounded-16 min-h-[130px]"
+              className="w-full cursor-pointer bg-gray/100 rounded-16 min-h-[200px] flex items-center justify-center"
             >
               <>
                 <div className="flex flex-col items-center justify-center p-6 gap-y-2">

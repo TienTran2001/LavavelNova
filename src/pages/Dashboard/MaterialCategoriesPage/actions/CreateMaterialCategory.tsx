@@ -33,14 +33,14 @@ const CreateMaterialCategory = () => {
     data: IFormCategory,
     resetOption?: {
       reset: () => void;
-      setResetImage: (value: boolean) => void;
+      setResetImage: React.Dispatch<React.SetStateAction<boolean>>;
     }
   ) => {
     setCategory((prev) => ({ ...prev, loading: true }));
     if (resetOption) {
       const { reset, setResetImage } = resetOption;
       setResetForm(() => reset); // callback to use reset form
-      setResetImage(true); // clear link img
+      setResetImage((prev) => !prev); // clear link img
     }
     setCategory((prev) => ({ ...prev, data }));
   };

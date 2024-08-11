@@ -88,7 +88,7 @@ const CategoriesTable = () => {
       setDeleteCategory((prev) => ({ ...prev, loading: true }));
       await deleteMaterialCategoryAPI(id);
       setDeleteCategory((prev) => ({ ...prev, loading: false, open: false }));
-      setReload(true);
+      setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
       setDeleteCategory((prev) => ({
@@ -104,7 +104,7 @@ const CategoriesTable = () => {
     try {
       await deleteMaterialCategoriesAPI(selected);
       setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
-      setReload(true);
+      setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!');
     } catch (err) {
       setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
@@ -124,7 +124,7 @@ const CategoriesTable = () => {
           name: searchQuery,
           offset,
         });
-
+        setData((prev) => ({ ...prev, loading: false }));
         if (!ignore) {
           const { results, count } = result.data;
           setData({ count: count, categories: results, loading: false });

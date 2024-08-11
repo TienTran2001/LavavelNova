@@ -32,7 +32,7 @@ interface IProps {
     data: IFormCategory,
     resetOption?: {
       reset: () => void;
-      setResetImage: (value: boolean) => void;
+      setResetImage: React.Dispatch<React.SetStateAction<boolean>>;
     }
   ) => void;
 }
