@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const useSearchQuery = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const [searchParams, setSearchParams] = useSearchParams();
   const currentSearchQuery = searchParams.get('search_query') || '';
 
   const [searchQuery, setSearchQuery] = useState(currentSearchQuery);
   const handleOnSearch = () => {
-    searchParams.set('search_query', searchQuery.trim());
-    searchParams.set('_page', '1');
-    navigate({
-      pathname: `${location.pathname}`,
-      search: `${searchParams}`,
-    });
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('search_query', searchQuery.trim());
+    newSearchParams.set('_page', '1');
+    setSearchParams(newSearchParams);
   };
 
   useEffect(() => {
     setSearchQuery(currentSearchQuery);
-  }, [currentSearchQuery]);
+  }, [currentSearchQuery, setSearchQuery]);
 
   return {
     searchQuery,
