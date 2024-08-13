@@ -18,6 +18,7 @@ import InputForm from '~/components/Input/InputForm';
 
 // @types
 import { ILogin } from './type';
+import currentPath from '~/utils/currentPath';
 
 const Login = () => {
   const [valueLogin, setValueLogin] = useState<ILogin>({
@@ -44,7 +45,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user !== null) {
-      navigate('/materials/categories');
+      navigate(currentPath.materialCategories.home);
     }
   }, [navigate, user]);
 
@@ -66,7 +67,7 @@ const Login = () => {
       });
       setToken(access);
       setRefreshToken(refresh);
-      navigate('/materials/categories');
+      navigate(currentPath.materialCategories.home);
     } catch (err) {
       setLoading(false);
       const { response } = err as {

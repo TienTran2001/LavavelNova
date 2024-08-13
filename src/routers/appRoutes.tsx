@@ -5,20 +5,27 @@ import { Outlet } from 'react-router-dom';
 import { RouteType } from './type';
 
 // @page
-import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
 import {
   CreateMaterialCategory,
   UpdateMaterialCategory,
 } from '~/pages/Dashboard/MaterialCategoriesPage/actions';
 import UsersPage from '~/pages/Dashboard/UsersPage/UsersPage';
+import MaterialCategoriesPage from '../pages/Dashboard/MaterialCategoriesPage/MaterialCategoriesPage';
+import {
+  CreateMaterial,
+  UpdateMaterial,
+} from '~/pages/Dashboard/MaterialPage/actions';
 
 // @assets
 import { collectionIcon, dashboardIcon } from '~/assets';
 
+// @utils
+import currentPath from '~/utils/currentPath';
+import MaterialsPage from '~/pages/Dashboard/MaterialPage/MaterialsPage';
+
 const appRoutes: RouteType[] = [
   {
     state: 'dashboards',
-    path: '/dashboards',
     element: <>{<Outlet />}</>,
     sideBarProps: {
       icon: (
@@ -34,15 +41,15 @@ const appRoutes: RouteType[] = [
     },
     child: [
       {
-        path: '/dashboards/main',
-        element: <>This is main page</>,
+        path: currentPath.dashboards.home,
+        element: <>main</>,
         state: 'dashboards.home',
         sideBarProps: {
           displayName: 'Main',
         },
       },
       {
-        path: '/dashboards/users',
+        path: currentPath.dashboards.user,
         element: <UsersPage />,
         state: 'dashboards.users',
         sideBarProps: {
@@ -54,7 +61,6 @@ const appRoutes: RouteType[] = [
 
   {
     state: 'materials',
-    path: '/materials',
     element: <>{<Outlet />}</>,
     sideBarProps: {
       icon: (
@@ -70,7 +76,25 @@ const appRoutes: RouteType[] = [
     },
     child: [
       {
-        path: '/materials/categories',
+        path: currentPath.materials.home,
+        element: <MaterialsPage />,
+        state: 'materials',
+        sideBarProps: {
+          displayName: 'Main',
+        },
+      },
+      {
+        path: currentPath.materials.create,
+        element: <CreateMaterial />,
+        state: 'materials.create',
+      },
+      {
+        path: currentPath.materials.update,
+        element: <UpdateMaterial />,
+        state: 'materials.update',
+      },
+      {
+        path: currentPath.materialCategories.home,
         element: <MaterialCategoriesPage />,
         state: 'materials.categories',
         sideBarProps: {
@@ -78,12 +102,12 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: '/materials/categories/:id',
+        path: currentPath.materialCategories.update,
         element: <UpdateMaterialCategory />,
         state: 'materials.categories-detail',
       },
       {
-        path: '/materials/categories/create',
+        path: currentPath.materialCategories.create,
         element: <CreateMaterialCategory />,
         state: 'materials.categories.create',
       },

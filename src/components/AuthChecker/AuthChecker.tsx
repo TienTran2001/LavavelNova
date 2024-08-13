@@ -1,6 +1,12 @@
+// @react
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../store/useUserStore';
 import { useEffect } from 'react';
+
+// @store
+import { useUserStore } from '~/store/useUserStore';
+
+// @utils
+import currentPath from '~/utils/currentPath';
 
 const AuthChecker = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserStore();
@@ -8,7 +14,7 @@ const AuthChecker = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!user) {
-      navigate('/login');
+      navigate(currentPath.login);
     }
   }, [user, navigate]);
 

@@ -6,6 +6,12 @@ export const getMaterialCategoriesAPI = ({ name = '', offset = 0 }) =>
     method: 'get',
   });
 
+export const getAllMaterialCategoriesAPI = () =>
+  axios({
+    url: `/cms/material_categories?limit=50`,
+    method: 'get',
+  });
+
 export const addMaterialCategoriesAPI = (data: {
   name: string;
   price_type: string;
