@@ -50,7 +50,6 @@ import { IDataTableMaterial } from '../type';
 const MaterialsTable = () => {
   const navigate = useNavigate();
   const { searchQuery } = useSearchQuery();
-  const { page } = usePaging();
   const limit = 5;
 
   const {
@@ -67,6 +66,7 @@ const MaterialsTable = () => {
     materials: [],
     loading: false,
   });
+  const { page } = usePaging(Math.ceil(data.count / limit));
 
   const [deleteMaterial, setDeleteMaterial] = useState<IDeleteCategory<string>>(
     {

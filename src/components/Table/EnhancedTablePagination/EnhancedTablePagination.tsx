@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const EnhancedTablePagination = ({ count, limit, setLoading }: IProps) => {
-  const { prevClick, nextClick, page } = usePaging();
+  const { prevClick, nextClick, page } = usePaging(Math.ceil(count / limit));
   const handleNext = () => {
     setLoading();
     nextClick();

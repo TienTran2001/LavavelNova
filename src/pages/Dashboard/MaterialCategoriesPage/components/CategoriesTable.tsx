@@ -49,7 +49,6 @@ import { IDataTable, IDeleteCategory } from '../type';
 const CategoriesTable = () => {
   const navigate = useNavigate();
   const { searchQuery } = useSearchQuery();
-  const { page } = usePaging();
   const limit = 5;
 
   const {
@@ -66,6 +65,7 @@ const CategoriesTable = () => {
     categories: [],
     loading: false,
   });
+  const { page } = usePaging(Math.ceil(data.count / limit));
 
   const [deleteCategory, setDeleteCategory] = useState<IDeleteCategory<string>>(
     {

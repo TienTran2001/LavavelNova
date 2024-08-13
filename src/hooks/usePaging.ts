@@ -1,35 +1,36 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
-const usePaging = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const pageParams = new URLSearchParams(location.search);
-  const page: number = Number(pageParams.get('_page')) || 1;
+const usePaging = (maxPage: number) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page: number = Number(searchParams.get('_page')) || 1;
 
   const prevClick = () => {
-    pageParams.set('_page', (page - 1).toString());
-    navigate({
-      pathname: `${location.pathname}`,
-      search: `${pageParams}`,
-    });
+    const newPage = Math.max(page - 1, 1);
+    searchParams.set('_page', newPage.toString());
+    setSearchParams(searchParams);
   };
 
   const nextClick = () => {
-    pageParams.set('_page', (page + 1).toString());
-    navigate({
-      pathname: `${location.pathname}`,
-      search: pageParams.toString(),
-    });
+    searchParams.set('_page', (page + 1).toString());
+    setSearchParams(searchParams);
   };
 
-  useEffect(() => {}, [page]);
+  useEffect(() => {
+    if (page < 1) {
+      searchParams.set('_page', '1');
+      setSearchParams(searchParams);
+    }
+    if (maxPage > 0 && page > maxPage) {
+      searchParams.set('_page', `${maxPage}`);
+      setSearchParams(searchParams);
+    }
+  }, [maxPage, page, searchParams, setSearchParams]);
 
   return {
     prevClick,
     nextClick,
     page,
-    pageParams,
   };
 };
 
