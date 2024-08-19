@@ -1,26 +1,26 @@
 // @react
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 // @mui
 import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
-import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import Checkbox from '@mui/material/Checkbox';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 
 // @components
+import ModalDanger from '~/components/Modal/ModalDanger';
 import {
   EnhancedTableHead,
   EnhancedTablePagination,
   EnhancedTableToolbar,
 } from '~/components/Table';
-import ModalDanger from '~/components/Modal/ModalDanger';
 import { CategoriesSkeleton } from './skeletonLoading';
 
 // @hooks
@@ -44,12 +44,27 @@ import {
 import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
-import { IDataTable, IDeleteCategory } from '../type';
+import { IDataTable } from '~/pages/Dashboard/MaterialCategoriesPage/type';
+
+interface IRefModel {
+  open: () => void;
+  start: () => void;
+  end: () => void;
+}
+
+const initialValue = {
+  count: 0,
+  categories: [],
+  loading: false,
+};
 
 const CategoriesTable = () => {
   const navigate = useNavigate();
   const { searchQuery } = useSearchQuery();
+
   const limit = 5;
+  const [data, setData] = useState<IDataTable>(initialValue);
+  const { page } = usePaging(Math.ceil(data.count / limit));
 
   const {
     selected,
@@ -58,62 +73,43 @@ const CategoriesTable = () => {
     handleClickSelect,
     handleSelectAllClick,
   } = useSelectItemTable();
+  const [categoryId, setCategoryId] = useState('');
 
-  const [reload, setReload] = useState(false);
-  const [data, setData] = useState<IDataTable>({
-    count: 0,
-    categories: [],
-    loading: false,
-  });
-  const { page } = usePaging(Math.ceil(data.count / limit));
+  const [reload, setReload] = useState(false); // reload data table
 
-  const [deleteCategory, setDeleteCategory] = useState<IDeleteCategory<string>>(
-    {
-      id: '',
-      open: false,
-      loading: false,
-    }
-  );
+  // @ref
+  const modalDeleteRef = useRef<IRefModel>(null);
+  const modalDeleteALotRef = useRef<IRefModel>(null);
 
-  const [deleteCategories, setDeleteCategories] = useState<
-    IDeleteCategory<string[]>
-  >({
-    id: [],
-    open: false,
-    loading: false,
-  });
-
+  // @handle
   const handleDelete = async (id: string) => {
     try {
-      setDeleteCategory((prev) => ({ ...prev, loading: true }));
+      modalDeleteRef?.current?.start();
       await deleteMaterialCategoryAPI(id);
-      setDeleteCategory((prev) => ({ ...prev, loading: false, open: false }));
+      modalDeleteRef?.current?.end();
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
-      setDeleteCategory((prev) => ({
-        ...prev,
-        loading: false,
-        open: false,
-      }));
+      modalDeleteRef?.current?.end();
       toast(`⚠️ Deleted error!!!`);
     }
   };
 
   const handleDeleteCategories = async (selected: string[]) => {
     try {
+      modalDeleteALotRef?.current?.start();
       await deleteMaterialCategoriesAPI(selected);
-      setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
+      modalDeleteALotRef?.current?.end();
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!');
     } catch (err) {
-      setDeleteCategories((prev) => ({ ...prev, loading: false, open: false }));
+      modalDeleteALotRef?.current?.end();
       toast('Deleted fail!');
     }
   };
 
+  // @useEffect
   useEffect(() => {
-    console.log('vào ');
     let ignore = false;
 
     const fetchCategories = async () => {
@@ -152,9 +148,7 @@ const CategoriesTable = () => {
             numSelected={selected.length}
             onSelectAllClick={(e) => handleSelectAllClick(e, data.categories)}
             rowCount={data.categories.length}
-            handleDeleteAll={() =>
-              setDeleteCategories((prev) => ({ ...prev, open: true }))
-            }
+            handleDeleteAll={() => modalDeleteALotRef?.current?.open()}
           />
 
           <TableContainer>
@@ -248,11 +242,8 @@ const CategoriesTable = () => {
                             <IconButton
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setDeleteCategory((prev) => ({
-                                  ...prev,
-                                  id: row.id,
-                                  open: true,
-                                }));
+                                setCategoryId(row.id);
+                                modalDeleteRef?.current?.open();
                               }}
                             >
                               <img src={trashIcon} alt="trash icon" />
@@ -277,21 +268,13 @@ const CategoriesTable = () => {
           </Box>
         </Paper>
         <ModalDanger
+          ref={modalDeleteRef}
           content="Are you sure want to delete?"
-          loading={deleteCategory.loading}
-          open={deleteCategory.open}
-          handleClose={() =>
-            setDeleteCategory((prev) => ({ ...prev, open: false }))
-          }
-          handleDelete={() => handleDelete(deleteCategory.id)}
+          handleDelete={() => handleDelete(categoryId)}
         />
         <ModalDanger
-          content={'You want to delete the selected material categories?'}
-          loading={deleteCategories.loading}
-          open={deleteCategories.open}
-          handleClose={() =>
-            setDeleteCategories((prev) => ({ ...prev, open: false }))
-          }
+          ref={modalDeleteALotRef}
+          content="You want to delete the selected material categories?"
           handleDelete={() => handleDeleteCategories(selected)}
         />
       </Box>

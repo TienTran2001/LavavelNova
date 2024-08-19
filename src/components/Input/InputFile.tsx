@@ -9,9 +9,9 @@ import {
 } from 'react-hook-form';
 
 // @mui
+import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 
 interface IProps<T extends FieldValues> {
@@ -43,6 +43,7 @@ const InputFile = <T extends FieldValues>({
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
