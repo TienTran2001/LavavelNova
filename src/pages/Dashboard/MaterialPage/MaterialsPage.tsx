@@ -10,16 +10,11 @@ import Typography from '@mui/material/Typography';
 import InputSearch from '~/components/Input/InputSearch';
 import MaterialsTable from './components/MaterialsTable';
 
-// @hooks
-import useSearchQuery from '~/hooks/useSearchQuery';
-
 // @utils
 import COLORS from '~/utils/colors';
 import currentPath from '~/utils/currentPath';
 
 export default function MaterialsPage() {
-  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();
-
   return (
     <Box>
       <Typography
@@ -38,13 +33,7 @@ export default function MaterialsPage() {
         justifyContent="space-between"
       >
         <Box>
-          <InputSearch
-            value={searchQuery}
-            onSearch={handleOnSearch}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search"
-            className="shadow-sm"
-          />
+          <InputSearch placeholder="Search" className="shadow-sm" />
         </Box>
         <Link to={currentPath.materials.create}>
           <Button

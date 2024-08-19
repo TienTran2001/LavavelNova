@@ -1,28 +1,30 @@
-import { Box, IconButton } from '@mui/material';
-import COLORS from '../../utils/colors';
-import SIZES from '../../utils/sizes';
+// @mui
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, IconButton } from '@mui/material';
+
+// @hooks
+import useSearchQuery from '~/hooks/useSearchQuery';
+
+// @utils
+import COLORS from '~/utils/colors';
+import SIZES from '~/utils/sizes';
 
 interface IProps {
-  value: string;
   placeholder?: string;
   backgroundColor?: string;
   className?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearch?: () => void;
 }
 
 const InputSearch = ({
-  value = '',
   placeholder = '',
   backgroundColor = 'white',
   className,
-  onChange,
-  onSearch = () => {},
 }: IProps) => {
+  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      onSearch();
+      handleOnSearch();
     }
   };
   return (
@@ -38,16 +40,16 @@ const InputSearch = ({
       <IconButton
         aria-label="search"
         sx={{ color: COLORS.gray400, p: '6px' }}
-        onClick={onSearch}
+        onClick={handleOnSearch}
       >
         <SearchIcon />
       </IconButton>
       <input
         type="text"
-        value={value}
+        value={searchQuery}
         className="w-full px-2 bg-transparent outline-none text-14 text-gray/600"
         placeholder={placeholder}
-        onChange={onChange}
+        onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={handleKeyDown}
       />
     </Box>
