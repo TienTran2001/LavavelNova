@@ -1,5 +1,5 @@
 // @react
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 // @mui
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -32,12 +32,19 @@ const ModalDanger = forwardRef(
       ref,
       () => ({
         open: handleOpen,
-        end: handleClose,
-        start: () => setLoading(true),
+        close: handleClose,
         loading: (value: boolean) => setLoading(value),
       }),
       []
     );
+
+    // @effect
+    useEffect(() => {
+      if (loading) {
+        handleDelete();
+        setLoading(false);
+      }
+    }, [handleDelete, loading]);
 
     return (
       <Modal
@@ -63,7 +70,7 @@ const ModalDanger = forwardRef(
                   color: 'white',
                   textTransform: 'capitalize',
                 }}
-                onClick={handleDelete}
+                onClick={() => setLoading(true)}
               >
                 Delete
               </LoadingButton>
