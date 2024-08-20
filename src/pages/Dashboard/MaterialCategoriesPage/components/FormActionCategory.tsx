@@ -1,5 +1,11 @@
 // @react
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,6 +40,7 @@ const FormActionCategory = forwardRef(
   ({ category, type = 'create', handleAction }: IProps, ref) => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    console.log(loading);
     const [data, setData] = useState<IFormCategory>({
       image: [],
       name: '',
@@ -58,6 +65,11 @@ const FormActionCategory = forwardRef(
       setLoading(true);
     };
 
+    const handleRequest = useCallback(async () => {
+      await handleAction(data);
+      setLoading(false);
+    }, [data, handleAction]);
+
     useImperativeHandle(
       ref,
       () => ({
@@ -80,10 +92,9 @@ const FormActionCategory = forwardRef(
 
     useEffect(() => {
       if (loading) {
-        handleAction(data);
-        setLoading(false);
+        handleRequest();
       }
-    }, [data, handleAction, loading]);
+    }, [handleRequest, loading]);
 
     return (
       <div>

@@ -1,5 +1,11 @@
 // @react
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,6 +78,11 @@ const FormActionMaterial = forwardRef(
       setLoading(true);
     };
 
+    const handleRequest = useCallback(async () => {
+      await handleAction(data);
+      setLoading(false);
+    }, [data, handleAction]);
+
     useImperativeHandle(
       ref,
       () => ({
@@ -116,10 +127,9 @@ const FormActionMaterial = forwardRef(
 
     useEffect(() => {
       if (loading) {
-        handleAction(data);
-        setLoading(false);
+        handleRequest();
       }
-    }, [data, handleAction, loading]);
+    }, [handleRequest, loading]);
 
     return (
       <div>
