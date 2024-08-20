@@ -15,6 +15,7 @@ export default {
       },
       margin: {
         sideBar: '240px',
+        50: '50px',
       },
       colors: {
         'gray/600': '#475569',
