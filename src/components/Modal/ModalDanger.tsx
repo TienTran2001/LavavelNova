@@ -42,7 +42,7 @@ const ModalDanger = forwardRef(
     useEffect(() => {
       if (loading) {
         handleDelete();
-        setLoading(false);
+        handleClose();
       }
     }, [handleDelete, loading]);
 
