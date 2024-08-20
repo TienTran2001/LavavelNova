@@ -98,23 +98,21 @@ const FormActionMaterial = forwardRef(
     useEffect(() => {
       fetchCategories();
       fetchSuppliers();
-    }, [material, setValue]);
+    }, []);
 
     useEffect(() => {
-      if (material) {
-        if (material) {
-          setImageUrl(material.image);
-          setValue('part_number', material.part_number.toString());
-          setValue('name', material.name);
-          setValue('type', material.type);
-          setValue('large_title', material.large_title);
-          setValue('small_title', material.small_title);
-          setValue('basic_price', material.basic_price);
-          setValue('category', material.category);
-          setValue('supplier', material.supplier);
-        }
+      if (type === 'update' && material) {
+        setImageUrl(material.image);
+        setValue('part_number', material.part_number.toString());
+        setValue('name', material.name);
+        setValue('type', material.type);
+        setValue('large_title', material.large_title);
+        setValue('small_title', material.small_title);
+        setValue('basic_price', material.basic_price);
+        setValue('category', material.category);
+        setValue('supplier', material.supplier);
       }
-    }, [material, setValue]);
+    }, [material, setValue, type]);
 
     useEffect(() => {
       if (loading) {
