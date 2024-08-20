@@ -48,8 +48,7 @@ import { IDataTable } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 
 interface IRefModel {
   open: () => void;
-  start: () => void;
-  end: () => void;
+  close: () => void;
 }
 
 const initialValue = {
@@ -84,26 +83,22 @@ const CategoriesTable = () => {
   // @handle
   const handleDelete = async (id: string) => {
     try {
-      modalDeleteRef?.current?.start();
       await deleteMaterialCategoryAPI(id);
-      modalDeleteRef?.current?.end();
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
-      modalDeleteRef?.current?.end();
+      modalDeleteRef.current?.close(); // not loading and close popup
       toast(`⚠️ Deleted error!!!`);
     }
   };
 
   const handleDeleteCategories = async (selected: string[]) => {
     try {
-      modalDeleteALotRef?.current?.start();
       await deleteMaterialCategoriesAPI(selected);
-      modalDeleteALotRef?.current?.end();
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!');
     } catch (err) {
-      modalDeleteALotRef?.current?.end();
+      modalDeleteALotRef.current?.close();
       toast('Deleted fail!');
     }
   };
