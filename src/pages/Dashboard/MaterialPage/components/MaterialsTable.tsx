@@ -48,8 +48,7 @@ import { IDataTableMaterial } from '../type';
 
 interface IRefModel {
   open: () => void;
-  start: () => void;
-  end: () => void;
+  close: () => void;
 }
 
 const initialValue = {
@@ -85,26 +84,22 @@ const MaterialsTable = () => {
   // @handle
   const handleDelete = async (id: string) => {
     try {
-      modalDeleteRef?.current?.start();
       await deleteMaterialAPI(id);
-      modalDeleteRef?.current?.end();
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
-      modalDeleteRef?.current?.end();
+      modalDeleteRef.current?.close(); // not loading and close popup
       toast(`⚠️ Deleted error!!!`);
     }
   };
 
   const handleDeleteMaterials = async (selected: string[]) => {
     try {
-      modalDeleteALotRef?.current?.start();
       await deleteMaterialsAPI(selected);
-      modalDeleteALotRef?.current?.end();
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!');
     } catch (err) {
-      modalDeleteALotRef?.current?.end();
+      modalDeleteALotRef.current?.close();
       toast('⚠️ Deleted fail!');
     }
   };
