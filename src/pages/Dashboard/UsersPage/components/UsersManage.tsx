@@ -1,14 +1,11 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import COLORS from '../../../../utils/colors';
 import InputSearch from '../../../../components/Input/InputSearch';
+import COLORS from '../../../../utils/colors';
 import UsersTable from './UsersTable';
-import useSearchQuery from '../../../../hooks/useSearchQuery';
 
 const UsersManage = () => {
-  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();
-
   return (
     <Box>
       <Typography
@@ -27,13 +24,7 @@ const UsersManage = () => {
         justifyContent="space-between"
       >
         <Box>
-          <InputSearch
-            value={searchQuery}
-            onSearch={handleOnSearch}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search"
-            className="shadow-sm"
-          />
+          <InputSearch placeholder="Search" className="shadow-sm" />
         </Box>
         <Button
           variant="contained"

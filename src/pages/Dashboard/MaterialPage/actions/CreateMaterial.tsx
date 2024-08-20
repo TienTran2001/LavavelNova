@@ -1,93 +1,49 @@
 // @react
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 // @apis
-import FormActionMaterial from '../components/FormActionMaterial';
 import { createMaterialAPI } from '~/apis/materials';
 
 // @components
+import FormActionMaterial from '~/pages/Dashboard/MaterialPage/components/FormActionMaterial';
 
 // @types
-import { IFormMaterial } from '../type';
-
-interface IMMaterial {
-  data: IFormMaterial;
-  loading: boolean;
-}
-
-const initialState = {
-  data: {
-    image: [],
-    part_number: '',
-    category: '',
-    supplier: '',
-    small_title: '',
-    large_title: '',
-    basic_price: 0,
-  },
-  loading: false,
-};
+import { IFormMaterial } from '~/pages/Dashboard/MaterialPage/type';
 
 const CreateMaterial = () => {
-  const [materials, setMaterials] = useState<IMMaterial>(initialState);
-  const [resetForm, setResetForm] = useState<() => void>(() => {});
-  const handleOnSubmit = async (
-    data: IFormMaterial,
-    resetOption?: {
-      reset: () => void;
-      setResetImage: React.Dispatch<React.SetStateAction<boolean>>;
-    }
-  ) => {
-    if (resetOption) {
-      const { reset, setResetImage } = resetOption;
-      setResetForm(() => reset); // callback to use reset form
-      setResetImage((prev) => !prev); // clear link img
-    }
-    setMaterials((prev) => ({ ...prev, loading: true, data }));
-  };
+  // @ref
+  const actionFormRef = useRef<{ resetForm: () => void }>(null);
 
-  const handleAddMaterial = useCallback(
-    async (data: IFormMaterial) => {
-      try {
-        await createMaterialAPI(data);
-        setMaterials((prev) => ({ ...prev, loading: false }));
-        toast('🔔 Created successfully!!');
-        resetForm();
-      } catch (err) {
-        setMaterials((prev) => ({ ...prev, loading: false }));
-        const errorResponse = err as {
-          response?: { data?: { part_number?: string[] } };
-        };
+  // @handle
+  const handleAddMaterial = useCallback(async (data: IFormMaterial) => {
+    try {
+      await createMaterialAPI(data);
+      actionFormRef.current?.resetForm();
+      toast('🔔 Created successfully!!');
+    } catch (err) {
+      const errorResponse = err as {
+        response?: { data?: { part_number?: string[] } };
+      };
 
-        if (errorResponse.response?.data?.part_number) {
-          toast(`⚠️ ${errorResponse.response.data.part_number[0]}`);
-        } else {
-          toast('⚠️ Created fail!!!');
-        }
-      }
-    },
-    [resetForm]
-  );
-
-  useEffect(() => {
-    if (materials.loading) {
-      if (materials.data) {
-        handleAddMaterial(materials.data);
+      if (errorResponse.response?.data?.part_number) {
+        toast(`⚠️ ${errorResponse.response.data.part_number[0]}`);
+      } else {
+        toast('⚠️ Created fail!!!');
       }
     }
-  }, [handleAddMaterial, materials.data, materials.loading]);
+  }, []);
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray/600">
         Create a new Material
       </h2>
-      <div className="mt-[50px]">
+      <div className="mt-50">
         <FormActionMaterial
-          loading={materials.loading}
+          ref={actionFormRef}
           type="create"
-          handleOnSubmit={handleOnSubmit}
+          handleAction={handleAddMaterial}
         />
       </div>
     </div>
