@@ -16,11 +16,14 @@ import SelectForm from '~/components/Input/SelectForm';
 // @utils
 import { getAllMaterialCategoriesAPI } from '~/apis/materialCategories';
 import { getSuppliersAPI } from '~/apis/supplier';
+import { ICategory } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 import COLORS from '~/utils/colors';
 
 // @types
-import { ICategory } from '../../MaterialCategoriesPage/type';
-import { IFormMaterial, IMaterialDetail } from '../type';
+import {
+  IFormMaterial,
+  IMaterialDetail,
+} from '~/pages/Dashboard/MaterialPage/type';
 
 interface IProps {
   handleAction: (data: IFormMaterial) => void;
