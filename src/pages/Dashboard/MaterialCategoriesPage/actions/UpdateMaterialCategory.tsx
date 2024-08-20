@@ -10,49 +10,36 @@ import {
 } from '~/apis/materialCategories';
 
 // @components
-import { FormActionCategory } from '../components';
+import { FormActionCategory } from '~/pages/Dashboard/MaterialCategoriesPage/components';
 
 // @types
-import { IFormCategory } from '../type';
+import { IFormCategory } from '~/pages/Dashboard/MaterialCategoriesPage/type';
+
+interface ICategory {
+  image: string;
+  name: string;
+  price_type: string;
+}
 
 const UpdateMaterialCategory = () => {
   const { id } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<IFormCategory | null>(null);
-  const [category, setCategory] = useState<{
-    image: string;
-    name: string;
-    price_type: string;
-  } | null>(null);
 
-  const handleOnSubmit = async (data: IFormCategory) => {
-    setLoading(true);
-    setData(data);
-  };
+  const [category, setCategory] = useState<ICategory | null>(null);
 
+  // @handle
   const handleUpdateCategory = useCallback(
     async (data: IFormCategory) => {
       try {
         if (id) {
           await updateMaterialCategoryAPI(id, data);
-          setLoading(false);
           toast('🔔 Updated successfully!!');
         }
       } catch (err) {
-        setLoading(false);
         toast('Updated fail!!!');
       }
     },
     [id]
   );
-
-  useEffect(() => {
-    if (loading) {
-      if (data) {
-        handleUpdateCategory(data);
-      }
-    }
-  }, [data, handleUpdateCategory, id, loading]);
 
   const getDetailCategory = useCallback(async (id: string) => {
     const response = await getMaterialCategoryAPI(id);
@@ -60,6 +47,7 @@ const UpdateMaterialCategory = () => {
     setCategory(data);
   }, []);
 
+  // @effect
   useEffect(() => {
     if (id) getDetailCategory(id);
   }, [id, getDetailCategory]);
@@ -69,12 +57,11 @@ const UpdateMaterialCategory = () => {
       <h2 className="text-2xl font-bold text-gray/600">
         Update a new Material Category
       </h2>
-      <div className="mt-[50px]">
+      <div className="mt-50">
         <FormActionCategory
+          handleAction={handleUpdateCategory}
           category={category}
-          loading={loading}
           type="update"
-          handleOnSubmit={handleOnSubmit}
         />
       </div>
     </div>
