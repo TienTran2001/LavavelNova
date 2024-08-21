@@ -1,8 +1,8 @@
 // @react
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 // @store
 import { useUserStore } from '~/store/useUserStore';
@@ -18,7 +18,6 @@ import InputForm from '~/components/Input/InputForm';
 
 // @types
 import { ILogin } from './type';
-import currentPath from '~/utils/currentPath';
 
 const Login = () => {
   const [valueLogin, setValueLogin] = useState<ILogin>({
@@ -36,18 +35,24 @@ const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const { setUser, setToken, setRefreshToken, user } = useUserStore();
+  const { state: locationState } = useLocation();
+
+  const { setUser, setToken, setRefreshToken } = useUserStore();
 
   const handleOnSubmit = (data: ILogin) => {
     setValueLogin(data);
     setLoading(true);
   };
 
-  useEffect(() => {
-    if (user !== null) {
-      navigate(currentPath.materialCategories.home);
+  const handleRedirectLogin = () => {
+    if (locationState && locationState.redirectTo) {
+      // Redirect when someone sends a link
+      const { redirectTo } = locationState;
+      navigate(`${redirectTo.pathname}${redirectTo.search}`);
+    } else {
+      navigate('/');
     }
-  }, [navigate, user]);
+  };
 
   const handleLogin = useCallback(async () => {
     try {
@@ -67,7 +72,8 @@ const Login = () => {
       });
       setToken(access);
       setRefreshToken(refresh);
-      navigate(currentPath.materialCategories.home);
+
+      handleRedirectLogin();
     } catch (err) {
       setLoading(false);
       const { response } = err as {
@@ -77,6 +83,7 @@ const Login = () => {
         toast.error(response.data.detail);
     }
   }, [
+    locationState,
     navigate,
     setRefreshToken,
     setToken,

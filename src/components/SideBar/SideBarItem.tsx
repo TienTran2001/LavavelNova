@@ -1,9 +1,9 @@
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { NavLink } from 'react-router-dom';
-import useMenuContext from '../../hooks/useMenuContext';
-import { RouteType } from '../../routers/type';
-import COLORS from '../../utils/colors';
+import useMenuContext from '~/hooks/useMenuContext';
+import { RouteType } from '~/routers/type';
+import COLORS from '~/utils/colors';
 
 interface IProps {
   item: RouteType;

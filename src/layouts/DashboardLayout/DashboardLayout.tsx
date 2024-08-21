@@ -1,15 +1,27 @@
 import Box from '@mui/material/Box';
-import TopBarComponent from '../../components/TopBar';
-import SideBarComponent from '../../components/SideBar';
-import COLORS from '../../utils/colors';
-import SIZES from '../../utils/sizes';
-import { Outlet } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
-import useMenuContext from '../../hooks/useMenuContext';
+import { Outlet } from 'react-router-dom';
+import SideBarComponent from '~/components/SideBar';
+import TopBarComponent from '~/components/TopBar';
+import useMenuContext from '~/hooks/useMenuContext';
+import COLORS from '~/utils/colors';
+import SIZES from '~/utils/sizes';
 
 const DashboardLayout = () => {
   const { isMenuOpen, setIsMenuOpen } = useMenuContext();
+  // const location = useLocation();
 
+  // const { user } = useUserStore();
+
+  // if (!user) {
+  //   return (
+  //     <Navigate
+  //       to={currentPath.login}
+  //       replace
+  //       state={{ redirectTo: location }}
+  //     />
+  //   );
+  // }
   return (
     <>
       {isMenuOpen && (
