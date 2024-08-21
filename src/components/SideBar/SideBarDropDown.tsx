@@ -1,20 +1,24 @@
-import { useState } from 'react';
-import { RouteType } from '../../routers/type';
-import ListItemButton from '@mui/material/ListItemButton';
-import COLORS from '../../utils/colors';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
-import SideBarItem from './SideBarItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import SideBarItem from '~/components/SideBar/SideBarItem';
+import { RouteType } from '~/routers/type';
+import COLORS from '~/utils/colors';
 
 interface IProps {
   item: RouteType;
 }
 const SideBarDropDown = ({ item }: IProps) => {
-  const [dropdown, setDropDow] = useState(true);
+  const location = useLocation();
+  const checkOpen = location.pathname.startsWith(`/${item.state}`);
+
+  const [dropdown, setDropDow] = useState(checkOpen);
 
   return item.sideBarProps ? (
     <>

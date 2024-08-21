@@ -1,9 +1,9 @@
 import ListItemButton from '@mui/material/ListItemButton';
-import { RouteType } from '../../routers/type';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import COLORS from '../../utils/colors';
 import { NavLink } from 'react-router-dom';
 import useMenuContext from '../../hooks/useMenuContext';
+import { RouteType } from '../../routers/type';
+import COLORS from '../../utils/colors';
 
 interface IProps {
   item: RouteType;
@@ -28,8 +28,6 @@ const SideBarItem = ({ item }: IProps) => {
           }}
         />
       )}
-      // component={Link}
-      // to={item.path}
       sx={{
         fontWeight: 400,
         color: COLORS.gray500,
