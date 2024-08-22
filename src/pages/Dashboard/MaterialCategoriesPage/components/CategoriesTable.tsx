@@ -44,6 +44,7 @@ import {
 import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
+import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
 import { IDataTable } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 
 interface IRefModel {
@@ -60,6 +61,7 @@ const initialValue = {
 const CategoriesTable = () => {
   const navigate = useNavigate();
   const { searchQuery } = useSearchQuery();
+  const [error, setError] = useState<string | null>(null);
 
   const limit = 5;
   const [data, setData] = useState<IDataTable>(initialValue);
@@ -103,6 +105,11 @@ const CategoriesTable = () => {
     }
   };
 
+  const handleRetry = () => {
+    setError(null);
+    setReload((prev) => !prev);
+  };
+
   // @useEffect
   useEffect(() => {
     let ignore = false;
@@ -124,6 +131,8 @@ const CategoriesTable = () => {
       } catch (err) {
         if (!ignore) {
           setData((prev) => ({ ...prev, loading: false }));
+          const errorResponse = err as { message?: string };
+          setError(errorResponse?.message || 'Error!!!');
         }
       }
     };
@@ -134,6 +143,10 @@ const CategoriesTable = () => {
       ignore = true;
     };
   }, [searchQuery, page, limit, setSelected, reload]);
+
+  if (error) {
+    return <ErrorWithRetry errorMessage={error} onRetry={handleRetry} />;
+  }
 
   return (
     <>
