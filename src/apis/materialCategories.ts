@@ -8,7 +8,7 @@ export const getMaterialCategoriesAPI = ({ name = '', offset = 0 }) =>
 
 export const getAllMaterialCategoriesAPI = () =>
   axios({
-    url: `/cms/material_categories?limit=50`,
+    url: `/cms/material_categories?limit=100`,
     method: 'get',
   });
 
