@@ -40,12 +40,6 @@ const FormActionCategory = forwardRef(
   ({ category, type = 'create', handleAction }: IProps, ref) => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    console.log(loading);
-    const [data, setData] = useState<IFormCategory>({
-      image: [],
-      name: '',
-      price_type: '',
-    });
 
     const {
       register,
@@ -60,15 +54,18 @@ const FormActionCategory = forwardRef(
     const [resetImage, setResetImage] = useState(false);
 
     // @handle
-    const onSubmit = (data: IFormCategory) => {
-      setData(data);
+    const onSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+      e.preventDefault();
       setLoading(true);
     };
 
-    const handleRequest = useCallback(async () => {
-      await handleAction(data);
-      setLoading(false);
-    }, [data, handleAction]);
+    const handleRequest = useCallback(
+      async (data: IFormCategory) => {
+        await handleAction(data);
+        setLoading(false);
+      },
+      [handleAction]
+    );
 
     useImperativeHandle(
       ref,
@@ -92,13 +89,13 @@ const FormActionCategory = forwardRef(
 
     useEffect(() => {
       if (loading) {
-        handleRequest();
+        handleSubmit(handleRequest)();
       }
-    }, [handleRequest, loading]);
+    }, [handleRequest, handleSubmit, loading]);
 
     return (
       <div>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={(e: React.ChangeEvent<HTMLFormElement>) => onSubmit(e)}>
           <div className="flex gap-x-6">
             <div className="w-1/3 ">
               <div className="px-8 py-5 bg-white shadow-sm rounded-[28px] ">

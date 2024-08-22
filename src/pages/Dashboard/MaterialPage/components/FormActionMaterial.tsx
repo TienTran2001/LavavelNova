@@ -37,22 +37,11 @@ interface IProps {
   type?: 'create' | 'update';
 }
 
-const initialState = {
-  image: [],
-  part_number: '',
-  category: '',
-  supplier: '',
-  small_title: '',
-  large_title: '',
-  basic_price: 0,
-};
-
 const FormActionMaterial = forwardRef(
   ({ material, type = 'create', handleAction }: IProps, ref) => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<IFormMaterial>(initialState);
 
     const [suppliers, setSuppliers] = useState<{ id: string; name: string }[]>(
       []
@@ -73,15 +62,18 @@ const FormActionMaterial = forwardRef(
     const [categories, setCategories] = useState<ICategory[]>([]);
 
     // @handle
-    const onSubmit = (data: IFormMaterial) => {
-      setData(data);
+    const onSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+      e.preventDefault();
       setLoading(true);
     };
 
-    const handleRequest = useCallback(async () => {
-      await handleAction(data);
-      setLoading(false);
-    }, [data, handleAction]);
+    const handleRequest = useCallback(
+      async (data: IFormMaterial) => {
+        await handleAction(data);
+        setLoading(false);
+      },
+      [handleAction]
+    );
 
     useImperativeHandle(
       ref,
@@ -127,13 +119,13 @@ const FormActionMaterial = forwardRef(
 
     useEffect(() => {
       if (loading) {
-        handleRequest();
+        handleSubmit(handleRequest)();
       }
-    }, [handleRequest, loading]);
+    }, [handleRequest, handleSubmit, loading]);
 
     return (
       <div>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={(e: React.ChangeEvent<HTMLFormElement>) => onSubmit(e)}>
           <div className="flex gap-x-6">
             <div className="w-1/3 ">
               <div className="px-8 py-5 bg-white shadow-sm rounded-[28px] ">

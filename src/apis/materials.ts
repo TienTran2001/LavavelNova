@@ -65,9 +65,9 @@ export const updateMaterialAPI = async (id: string, data: IFormMaterial) => {
         category: string;
         supplier: string;
       };
-
   if (data.image && data.image.length > 0) {
     const formData = new FormData();
+    formData.append('image', data.image[0]);
     data.name && formData.append('name', data.name);
     formData.append('part_number', data.part_number);
     data.type && formData.append('type', data.type.toString());
