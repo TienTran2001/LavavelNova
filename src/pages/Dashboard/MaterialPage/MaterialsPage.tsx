@@ -7,10 +7,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 // @components
-import InputSearch from '~/components/Input/InputSearch';
+import InputSearch from '~/components/Input/search/InputSearch';
 import MaterialsTable from './components/MaterialsTable';
 
 // @utils
+import SearchCategory from '~/pages/Dashboard/MaterialPage/components/SearchCategory';
 import COLORS from '~/utils/colors';
 import currentPath from '~/utils/currentPath';
 
@@ -32,8 +33,9 @@ export default function MaterialsPage() {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Box>
-          <InputSearch placeholder="Search" className="shadow-sm" />
+        <Box className="flex items-center gap-x-5">
+          <InputSearch placeholder="Search name..." className="shadow-sm" />
+          <SearchCategory />
         </Box>
         <Link to={currentPath.materials.create}>
           <Button

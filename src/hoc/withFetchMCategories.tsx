@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 
 // @apis
 import { getAllMaterialCategoriesAPI } from '~/apis/materialCategories';
-import { getSuppliersAPI } from '~/apis/supplier';
 
 // @components
 import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
@@ -11,35 +10,20 @@ import { ICategory } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 
 // @hooks
 import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
-interface ISuppliers {
-  id: string;
-  name: string;
-}
 
-export interface WithListMCSProps {
+export interface WithMCategoriesProps {
   categories: ICategory[];
-  suppliers: ISuppliers[];
 }
 
-export default function withMaterialsAndSuppliers<T>(
-  Component: React.ComponentType<T & WithListMCSProps>
+export default function withFetchMCategories<T>(
+  Component: React.ComponentType<T & WithMCategoriesProps>
 ) {
   return (props: T) => {
     const [categories, setCategories] = useState<ICategory[]>([]);
-    const [suppliers, setSuppliers] = useState<ISuppliers[]>([]);
 
     const { error, handleError, handleRetry } = useErrorHandler();
 
     // @fetch
-    const fetchSuppliers = async () => {
-      try {
-        const response = await getSuppliersAPI();
-        setSuppliers(response.data.results);
-      } catch (err) {
-        handleError(err as IError);
-      }
-    };
-
     const fetchCategories = async () => {
       try {
         const response = await getAllMaterialCategoriesAPI();
@@ -52,7 +36,6 @@ export default function withMaterialsAndSuppliers<T>(
     // @effect
     useEffect(() => {
       fetchCategories();
-      fetchSuppliers();
     }, []);
 
     if (error) {
@@ -62,15 +45,12 @@ export default function withMaterialsAndSuppliers<T>(
           onRetry={() =>
             handleRetry(() => {
               fetchCategories();
-              fetchSuppliers();
             })
           }
         />
       );
     }
 
-    return (
-      <Component {...props} categories={categories} suppliers={suppliers} />
-    );
+    return <Component {...props} categories={categories} />;
   };
 }

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import InputSearch from '../../../../components/Input/InputSearch';
+import InputSearch from '../../../../components/Input/search/InputSearch';
 import COLORS from '../../../../utils/colors';
 import UsersTable from './UsersTable';
 

@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 // @components
-import InputSearch from '~/components/Input/InputSearch';
+import InputSearch from '~/components/Input/search/InputSearch';
 import CategoriesTable from './components/CategoriesTable';
 
 // @utils

@@ -13,14 +13,16 @@ interface IProps {
   placeholder?: string;
   backgroundColor?: string;
   className?: string;
+  query?: string;
 }
 
 const InputSearch = ({
   placeholder = '',
   backgroundColor = 'white',
   className,
+  query,
 }: IProps) => {
-  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery();
+  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery(query);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

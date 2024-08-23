@@ -5,7 +5,7 @@ export const getMaterialsAPI = ({ name = '', offset = 0 }) =>
   axios({
     url: `/cms/material`,
     method: 'get',
-    params: { name, offset: offset, limit: 5 },
+    params: { name, offset: offset, limit: 5, category: '' },
   });
 
 export const createMaterialAPI = (data: IFormMaterial) => {

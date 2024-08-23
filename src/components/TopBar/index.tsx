@@ -1,34 +1,33 @@
-import AppBar from '@mui/material/AppBar';
-import COLORS from '../../utils/colors';
-import Toolbar from '@mui/material/Toolbar';
-import Box from '@mui/material/Box';
-import SIZES from '../../utils/sizes';
-import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import Badge from '@mui/material/Badge';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import { Logout, PersonAdd, Settings } from '@mui/icons-material';
-import React, { useState } from 'react';
-import InputSearch from '../Input/InputSearch';
-import MenuIcon from '@mui/icons-material/Menu';
-import useMenuContext from '../../hooks/useMenuContext';
-import { useUserStore } from '../../store/useUserStore';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import SearchTop from '~/components/Input/search/SearchTop';
+
+import useMenuContext from '~/hooks/useMenuContext';
+import { useUserStore } from '~/store/useUserStore';
+import COLORS from '~/utils/colors';
+import SIZES from '~/utils/sizes';
 
 const TopBarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { user, setUser } = useUserStore();
   const navigate = useNavigate();
-
-  const [search, setSearch] = useState('');
 
   const open = Boolean(anchorEl);
   const handleOpenProfile = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,10 +42,6 @@ const TopBarComponent = () => {
     setUser(null);
     localStorage.removeItem('laravel');
     navigate('/login');
-  };
-
-  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
   };
 
   return (
@@ -82,12 +77,12 @@ const TopBarComponent = () => {
               <MenuIcon />
             </IconButton>
             {/*--------------------- input search ---------------------------- */}
-            <InputSearch
-              value={search}
-              onChange={(e) => handleChangeSearch(e)}
+            {/* <InputSearch
+              query="top_q"
               placeholder="Press / to search"
               backgroundColor={COLORS.gray100}
-            />
+            /> */}
+            <SearchTop />
             {/*--------------------- end input search ---------------------------- */}
             {user != null ? (
               <>
