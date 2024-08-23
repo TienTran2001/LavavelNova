@@ -1,16 +1,19 @@
+// @ react
 import { useEffect, useState } from 'react';
+
+// @apis
 import { getAllMaterialCategoriesAPI } from '~/apis/materialCategories';
 import { getSuppliersAPI } from '~/apis/supplier';
+
+// @components
 import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
 import { ICategory } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 
+// @hooks
+import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
 interface ISuppliers {
   id: string;
   name: string;
-}
-
-interface IError {
-  message?: string;
 }
 
 export interface WithListMCSProps {
@@ -22,9 +25,10 @@ export default function withMaterialsAndSuppliers<T>(
   Component: React.ComponentType<T & WithListMCSProps>
 ) {
   return (props: T) => {
-    const [error, setError] = useState<string | null>(null);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [suppliers, setSuppliers] = useState<ISuppliers[]>([]);
+
+    const { error, handleError, handleRetry } = useErrorHandler();
 
     // @fetch
     const fetchSuppliers = async () => {
@@ -33,7 +37,7 @@ export default function withMaterialsAndSuppliers<T>(
         setSuppliers(response.data.results);
       } catch (err) {
         const errorResponse = err as IError;
-        setError(errorResponse?.message || 'Error!!!');
+        handleError(errorResponse);
       }
     };
 
@@ -43,26 +47,28 @@ export default function withMaterialsAndSuppliers<T>(
         setCategories(response.data.results);
       } catch (err) {
         const errorResponse = err as IError;
-        setError(errorResponse?.message || 'Error!!!');
+        handleError(errorResponse);
       }
-    };
-
-    const handleRetry = () => {
-      setError(null);
-      fetchCategories();
-      fetchSuppliers();
     };
 
     // @effect
     useEffect(() => {
-      console.log('vào nè ');
-
       fetchCategories();
       fetchSuppliers();
     }, []);
 
     if (error) {
-      return <ErrorWithRetry errorMessage={error} onRetry={handleRetry} />;
+      return (
+        <ErrorWithRetry
+          errorMessage={error}
+          onRetry={() =>
+            handleRetry(() => {
+              fetchCategories();
+              fetchSuppliers();
+            })
+          }
+        />
+      );
     }
 
     return (
