@@ -45,6 +45,7 @@ import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
 import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
+import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
 import { IDataTable } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 
 interface IRefModel {
@@ -61,7 +62,6 @@ const initialValue = {
 const CategoriesTable = () => {
   const navigate = useNavigate();
   const { searchQuery } = useSearchQuery();
-  const [error, setError] = useState<string | null>(null);
 
   const limit = 5;
   const [data, setData] = useState<IDataTable>(initialValue);
@@ -77,6 +77,7 @@ const CategoriesTable = () => {
   const [categoryId, setCategoryId] = useState('');
 
   const [reload, setReload] = useState(false); // reload data table
+  const { error, handleError, handleRetry } = useErrorHandler();
 
   // @ref
   const modalDeleteRef = useRef<IRefModel>(null);
@@ -105,11 +106,6 @@ const CategoriesTable = () => {
     }
   };
 
-  const handleRetry = () => {
-    setError(null);
-    setReload((prev) => !prev);
-  };
-
   // @useEffect
   useEffect(() => {
     let ignore = false;
@@ -131,8 +127,8 @@ const CategoriesTable = () => {
       } catch (err) {
         if (!ignore) {
           setData((prev) => ({ ...prev, loading: false }));
-          const errorResponse = err as { message?: string };
-          setError(errorResponse?.message || 'Error!!!');
+          const errorResponse = err as IError;
+          handleError(errorResponse);
         }
       }
     };
@@ -142,10 +138,15 @@ const CategoriesTable = () => {
     return () => {
       ignore = true;
     };
-  }, [searchQuery, page, limit, setSelected, reload]);
+  }, [handleError, page, searchQuery, setSelected, reload]);
 
   if (error) {
-    return <ErrorWithRetry errorMessage={error} onRetry={handleRetry} />;
+    return (
+      <ErrorWithRetry
+        errorMessage={error}
+        onRetry={() => handleRetry(() => setReload((prev) => !prev))}
+      />
+    );
   }
 
   return (

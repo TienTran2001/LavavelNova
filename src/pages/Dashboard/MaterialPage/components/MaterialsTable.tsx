@@ -44,6 +44,8 @@ import {
 import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
+import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
+import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
 import { IDataTableMaterial } from '../type';
 
 interface IRefModel {
@@ -76,6 +78,7 @@ const MaterialsTable = () => {
   } = useSelectItemTable();
 
   const [reload, setReload] = useState(false); // reload data table
+  const { error, handleError, handleRetry } = useErrorHandler();
 
   // @ref
   const modalDeleteRef = useRef<IRefModel>(null);
@@ -125,6 +128,8 @@ const MaterialsTable = () => {
       } catch (err) {
         if (!ignore) {
           setData((prev) => ({ ...prev, loading: false }));
+          const errorResponse = err as IError;
+          handleError(errorResponse);
         }
       }
     };
@@ -134,7 +139,16 @@ const MaterialsTable = () => {
     return () => {
       ignore = true;
     };
-  }, [searchQuery, page, limit, setSelected, reload]);
+  }, [handleError, searchQuery, page, limit, setSelected, reload]);
+
+  if (error) {
+    return (
+      <ErrorWithRetry
+        errorMessage={error}
+        onRetry={() => handleRetry(() => setReload((prev) => !prev))}
+      />
+    );
+  }
 
   return (
     <>

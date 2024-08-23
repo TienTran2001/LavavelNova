@@ -8,7 +8,7 @@ interface ErrorWithRetryProps {
 
 const ErrorWithRetry = ({ errorMessage, onRetry }: ErrorWithRetryProps) => {
   return (
-    <div className="flex flex-col items-center w-1/2 gap-5 py-10 mx-auto bg-white rounded-16">
+    <div className="flex flex-col items-center w-1/2 gap-5 py-10 mx-auto bg-white rounded-16 mt-50">
       <div className="max-w-[200px] w-full">
         <img
           src={warning}
