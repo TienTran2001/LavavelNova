@@ -1,4 +1,5 @@
 // @mui
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -48,9 +49,25 @@ const InputSearch = ({
         value={searchQuery}
         className="w-full px-2 bg-transparent outline-none text-14 text-gray/600"
         placeholder={placeholder}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => setSearchQuery(e.target.value.trim())}
         onKeyDown={handleKeyDown}
       />
+      {searchQuery.length > 0 && (
+        <IconButton
+          aria-label="clear"
+          sx={{ color: COLORS.gray400, p: '8px' }}
+          onClick={() => {
+            setSearchQuery('');
+          }}
+        >
+          <CancelRoundedIcon
+            sx={{
+              fontSize: 18,
+              color: COLORS.gray300,
+            }}
+          />
+        </IconButton>
+      )}
     </Box>
   );
 };
