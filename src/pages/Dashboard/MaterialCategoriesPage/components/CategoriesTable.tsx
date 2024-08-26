@@ -61,7 +61,7 @@ const initialValue = {
 
 const CategoriesTable = () => {
   const navigate = useNavigate();
-  const { searchQuery } = useSearchQuery();
+  const { searchQuery } = useSearchQuery('q');
 
   const limit = 5;
   const [data, setData] = useState<IDataTable>(initialValue);

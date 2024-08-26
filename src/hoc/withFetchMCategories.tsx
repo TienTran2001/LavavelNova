@@ -41,6 +41,7 @@ export default function withFetchMCategories<T>(
     if (error) {
       return (
         <ErrorWithRetry
+          variant="element"
           errorMessage={error}
           onRetry={() =>
             handleRetry(() => {

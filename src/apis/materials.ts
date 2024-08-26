@@ -1,11 +1,11 @@
 import axios from '~/axios';
 import { IFormMaterial } from '~/pages/Dashboard/MaterialPage/type';
 
-export const getMaterialsAPI = ({ name = '', offset = 0 }) =>
+export const getMaterialsAPI = ({ name = '', offset = 0, category = '' }) =>
   axios({
     url: `/cms/material`,
     method: 'get',
-    params: { name, offset: offset, limit: 5, category: '' },
+    params: { name, offset, limit: 5, category },
   });
 
 export const createMaterialAPI = (data: IFormMaterial) => {

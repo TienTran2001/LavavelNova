@@ -5,7 +5,6 @@ import withFetchMCategories, {
 
 const SearchCategory = withFetchMCategories(
   ({ categories }: WithMCategoriesProps) => {
-    console.log(categories);
     return <SearchAutoComplete options={categories} displayKey="name" />;
   }
 );

@@ -1,9 +1,12 @@
 // @react
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // @mui
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 // @components
@@ -14,6 +17,7 @@ import CategoriesTable from './components/CategoriesTable';
 import COLORS from '~/utils/colors';
 
 const MaterialCategoriesPage = () => {
+  const navigate = useNavigate();
   return (
     <Box>
       <Typography
@@ -31,8 +35,19 @@ const MaterialCategoriesPage = () => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Box>
-          <InputSearch placeholder="Search" className="shadow-sm" />
+        <Box className="flex gap-x-5">
+          <InputSearch placeholder="Search" className="shadow-sm" query="q" />
+          <Tooltip title="Clear search">
+            <IconButton
+              aria-label="search"
+              sx={{ color: COLORS.gray400, p: '6px' }}
+              onClick={() => {
+                navigate(window.location.pathname, { replace: true });
+              }}
+            >
+              <SearchOffIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
         <Link to="/materials/categories/create">
           <Button

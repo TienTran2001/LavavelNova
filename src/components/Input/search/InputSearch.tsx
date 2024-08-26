@@ -1,6 +1,7 @@
 // @mui
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, IconButton } from '@mui/material';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 
 // @hooks
 import useSearchQuery from '~/hooks/useSearchQuery';
@@ -13,7 +14,7 @@ interface IProps {
   placeholder?: string;
   backgroundColor?: string;
   className?: string;
-  query?: string;
+  query: string;
 }
 
 const InputSearch = ({
@@ -39,11 +40,7 @@ const InputSearch = ({
       }}
       className={className}
     >
-      <IconButton
-        aria-label="search"
-        sx={{ color: COLORS.gray400, p: '6px' }}
-        onClick={handleOnSearch}
-      >
+      <IconButton aria-label="search" sx={{ color: COLORS.gray400, p: '6px' }}>
         <SearchIcon />
       </IconButton>
       <input

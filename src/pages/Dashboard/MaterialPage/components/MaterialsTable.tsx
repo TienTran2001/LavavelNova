@@ -61,7 +61,8 @@ const initialValue = {
 
 const MaterialsTable = () => {
   const navigate = useNavigate();
-  const { searchQuery } = useSearchQuery();
+  const searchMaterialName = useSearchQuery('q');
+  const searchCategoryName = useSearchQuery('_category');
 
   const limit = 5;
   const [data, setData] = useState<IDataTableMaterial>(initialValue);
@@ -116,7 +117,8 @@ const MaterialsTable = () => {
       try {
         setData((prev) => ({ ...prev, loading: true }));
         const result = await getMaterialsAPI({
-          name: searchQuery,
+          name: searchMaterialName.searchQuery,
+          category: searchCategoryName.searchQuery,
           offset,
         });
         setData((prev) => ({ ...prev, loading: false }));
@@ -139,7 +141,15 @@ const MaterialsTable = () => {
     return () => {
       ignore = true;
     };
-  }, [handleError, searchQuery, page, limit, setSelected, reload]);
+  }, [
+    handleError,
+    searchMaterialName.searchQuery,
+    searchCategoryName.searchQuery,
+    page,
+    limit,
+    setSelected,
+    reload,
+  ]);
 
   if (error) {
     return (
@@ -165,7 +175,7 @@ const MaterialsTable = () => {
             {!data.loading ? (
               <Table
                 sx={{
-                  minWidth: 1600,
+                  minWidth: 2000,
                   borderBottom: `0.5px solid ${COLORS.gray300}`,
                 }}
                 aria-labelledby="tableTitle"
