@@ -28,7 +28,7 @@ export default function withMaterialsAndSuppliers<T>(
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [suppliers, setSuppliers] = useState<ISuppliers[]>([]);
 
-    const { error, handleError, handleRetry } = useErrorHandler();
+    const { error, handleError } = useErrorHandler();
 
     // @fetch
     const fetchSuppliers = async () => {
@@ -59,12 +59,11 @@ export default function withMaterialsAndSuppliers<T>(
       return (
         <ErrorWithRetry
           errorMessage={error}
-          onRetry={() =>
-            handleRetry(() => {
-              fetchCategories();
-              fetchSuppliers();
-            })
-          }
+          onRetry={() => {
+            handleError(null);
+            fetchCategories();
+            fetchSuppliers();
+          }}
         />
       );
     }

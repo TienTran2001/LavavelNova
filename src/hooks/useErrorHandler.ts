@@ -7,19 +7,15 @@ export interface IError {
 export function useErrorHandler() {
   const [error, setError] = useState<string | null>(null);
 
-  const handleError = useCallback((err: IError) => {
-    const errorMessage = err?.message || 'Error!!!';
-    setError(errorMessage);
-  }, []);
+  const handleError = useCallback((err: IError | null) => {
+    const errorMessage =
+      err?.message || 'Lồi rồi nè, ấn nút dưới để thử lại nào!!!';
 
-  const handleRetry = useCallback((callback: () => void) => {
-    setError(null);
-    callback();
+    err ? setError(errorMessage) : setError(null);
   }, []);
 
   return {
     error,
     handleError,
-    handleRetry,
   };
 }
