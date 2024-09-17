@@ -3,9 +3,22 @@ import withFetchMCategories, {
   WithMCategoriesProps,
 } from '~/hoc/withFetchMCategories';
 
+interface IProps {
+  field: {
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+}
+
 const SearchCategory = withFetchMCategories(
-  ({ categories }: WithMCategoriesProps) => {
-    return <SearchAutoComplete options={categories} displayKey="name" />;
+  ({ categories, field }: WithMCategoriesProps & IProps) => {
+    return (
+      <SearchAutoComplete
+        field={field}
+        options={categories}
+        displayKey="name"
+      />
+    );
   }
 );
 
