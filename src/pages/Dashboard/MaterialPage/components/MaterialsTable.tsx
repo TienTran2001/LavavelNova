@@ -44,8 +44,10 @@ import {
 import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
-import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
 import { IDataTableMaterial } from '~/pages/Dashboard/MaterialPage/type';
+
+// @hooks
+import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
 
 interface IRefModel {
   open: () => void;
