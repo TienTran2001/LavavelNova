@@ -7,12 +7,10 @@ const useSearchQuery = (query: string) => {
 
   const [searchQuery, setSearchQuery] = useState(currentSearchQuery);
   const handleOnSearch = () => {
-    if (searchQuery) {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set(query, searchQuery.trim());
-      newSearchParams.set('_page', '1');
-      setSearchParams(newSearchParams);
-    }
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(query, searchQuery.trim());
+    newSearchParams.set('_page', '1');
+    setSearchParams(newSearchParams);
   };
 
   useEffect(() => {
