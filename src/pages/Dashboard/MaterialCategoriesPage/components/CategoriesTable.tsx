@@ -44,7 +44,6 @@ import {
 import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
-import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
 import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
 import { IDataTable } from '~/pages/Dashboard/MaterialCategoriesPage/type';
 
@@ -59,9 +58,11 @@ const initialValue = {
   loading: false,
 };
 
+const randomNumberInt = (max: number) => Math.floor(Math.random() * max);
+
 const CategoriesTable = () => {
   const navigate = useNavigate();
-  const { searchQuery } = useSearchQuery('q');
+  const { searchQuery } = useSearchQuery('name');
 
   const limit = 5;
   const [data, setData] = useState<IDataTable>(initialValue);
@@ -77,7 +78,7 @@ const CategoriesTable = () => {
   const [categoryId, setCategoryId] = useState('');
 
   const [reload, setReload] = useState(false); // reload data table
-  const { error, handleError, handleRetry } = useErrorHandler();
+  const { error, handleError } = useErrorHandler();
 
   // @ref
   const modalDeleteRef = useRef<IRefModel>(null);
@@ -113,12 +114,15 @@ const CategoriesTable = () => {
     const fetchCategories = async () => {
       const offset = (page - 1) * limit;
       try {
+        if (randomNumberInt(5) === 1) {
+          handleError(new Error('Lỗi nè'));
+          return;
+        }
         setData((prev) => ({ ...prev, loading: true }));
         const result = await getMaterialCategoriesAPI({
           name: searchQuery,
           offset,
         });
-        setData((prev) => ({ ...prev, loading: false }));
         if (!ignore) {
           const { results, count } = result.data;
           setData({ count: count, categories: results, loading: false });
@@ -141,12 +145,7 @@ const CategoriesTable = () => {
   }, [handleError, page, searchQuery, setSelected, reload]);
 
   if (error) {
-    return (
-      <ErrorWithRetry
-        errorMessage={error}
-        onRetry={() => handleRetry(() => setReload((prev) => !prev))}
-      />
-    );
+    throw error;
   }
 
   return (
