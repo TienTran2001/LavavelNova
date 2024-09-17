@@ -44,9 +44,8 @@ import {
 import { pencilIcon, trashIcon } from '~/assets';
 
 // @types
-import ErrorWithRetry from '~/components/Error/ErrorWithRetry';
 import { IError, useErrorHandler } from '~/hooks/useErrorHandler';
-import { IDataTableMaterial } from '../type';
+import { IDataTableMaterial } from '~/pages/Dashboard/MaterialPage/type';
 
 interface IRefModel {
   open: () => void;
@@ -59,10 +58,14 @@ const initialValue = {
   loading: false,
 };
 
+const randomNumberInt = (max: number) => {
+  return Math.floor(Math.random() * max);
+};
+
 const MaterialsTable = () => {
   const navigate = useNavigate();
-  const searchMaterialName = useSearchQuery('q');
-  const searchCategoryName = useSearchQuery('_category');
+  const searchMaterialName = useSearchQuery('name');
+  const searchCategoryName = useSearchQuery('category');
 
   const limit = 5;
   const [data, setData] = useState<IDataTableMaterial>(initialValue);
@@ -79,7 +82,7 @@ const MaterialsTable = () => {
   } = useSelectItemTable();
 
   const [reload, setReload] = useState(false); // reload data table
-  const { error, handleError, handleRetry } = useErrorHandler();
+  const { error, handleError } = useErrorHandler();
 
   // @ref
   const modalDeleteRef = useRef<IRefModel>(null);
@@ -115,13 +118,17 @@ const MaterialsTable = () => {
     const fetchMaterials = async () => {
       const offset = (page - 1) * limit;
       try {
+        if (randomNumberInt(5) === 1) {
+          handleError(new Error('Lỗi nè'));
+          return;
+        }
         setData((prev) => ({ ...prev, loading: true }));
         const result = await getMaterialsAPI({
           name: searchMaterialName.searchQuery,
           category: searchCategoryName.searchQuery,
           offset,
         });
-        setData((prev) => ({ ...prev, loading: false }));
+
         if (!ignore) {
           const { results, count } = result.data;
           setData({ count: count, materials: results, loading: false });
@@ -131,7 +138,7 @@ const MaterialsTable = () => {
         if (!ignore) {
           setData((prev) => ({ ...prev, loading: false }));
           const errorResponse = err as IError;
-          handleError(errorResponse);
+          handleError(new Error(errorResponse.message));
         }
       }
     };
@@ -142,22 +149,17 @@ const MaterialsTable = () => {
       ignore = true;
     };
   }, [
-    handleError,
     searchMaterialName.searchQuery,
     searchCategoryName.searchQuery,
     page,
     limit,
     setSelected,
     reload,
+    handleError,
   ]);
 
   if (error) {
-    return (
-      <ErrorWithRetry
-        errorMessage={error}
-        onRetry={() => handleRetry(() => setReload((prev) => !prev))}
-      />
-    );
+    throw error;
   }
 
   return (

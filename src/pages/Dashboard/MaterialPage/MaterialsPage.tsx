@@ -75,7 +75,9 @@ export default function MaterialsPage() {
 
       {/* --------------------table------------------------ */}
       <Box mt={3}>
-        <MaterialsTable />
+        <ErrorBoundary fallback={ErrorDataTable}>
+          <MaterialsTable />
+        </ErrorBoundary>
       </Box>
       {/* -------------------- end table------------------------ */}
     </Box>
