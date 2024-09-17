@@ -1,37 +1,31 @@
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import Autocomplete from '@mui/material/Autocomplete';
-import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
-import useSearchQuery from '~/hooks/useSearchQuery';
-import COLORS from '~/utils/colors';
 
 interface IProps<T> {
   options: T[];
   displayKey: string;
+  field: {
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
 }
 
 export default function SearchAutoComplete<T>({
   options,
   displayKey,
+  field,
 }: IProps<T>) {
-  const { searchQuery, setSearchQuery, handleOnSearch } =
-    useSearchQuery('_category');
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleOnSearch();
-    }
-  };
-
   return (
     <>
       <Autocomplete
         freeSolo
         disableClearable
         options={options.map((option) => option[displayKey as keyof T])}
-        inputValue={searchQuery}
+        inputValue={field.value}
         onInputChange={(_, newInputValue) => {
-          setSearchQuery(newInputValue.trim());
+          field.onChange({
+            target: { value: newInputValue.trim() },
+          } as React.ChangeEvent<HTMLInputElement>);
         }}
         sx={{
           width: '300px',
@@ -49,32 +43,14 @@ export default function SearchAutoComplete<T>({
           <div className="relative">
             <TextField
               {...params}
+              {...field}
               placeholder="Category name..."
               sx={{
                 '& .MuiInputBase-input': {
                   fontSize: 14,
                 },
               }}
-              onKeyDown={handleKeyDown}
             />
-            {searchQuery.length > 0 && (
-              <div className="absolute top-0 right-0">
-                <IconButton
-                  aria-label="clear"
-                  sx={{ color: COLORS.gray400, p: '8px' }}
-                  onClick={() => {
-                    setSearchQuery('');
-                  }}
-                >
-                  <CancelRoundedIcon
-                    sx={{
-                      fontSize: 18,
-                      color: COLORS.gray300,
-                    }}
-                  />
-                </IconButton>
-              </div>
-            )}
           </div>
         )}
       />
