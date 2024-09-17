@@ -1,11 +1,9 @@
 // @mui
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 
 // @hooks
-import useSearchQuery from '~/hooks/useSearchQuery';
 
 // @utils
 import COLORS from '~/utils/colors';
@@ -16,6 +14,10 @@ interface IProps {
   backgroundColor?: string;
   className?: string;
   query: string;
+  field: {
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
 }
 
 const InputSearch = ({
@@ -23,14 +25,9 @@ const InputSearch = ({
   backgroundColor = 'white',
   className,
   query,
+  field,
 }: IProps) => {
-  const { searchQuery, setSearchQuery, handleOnSearch } = useSearchQuery(query);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleOnSearch();
-    }
-  };
+  console.log(query);
   return (
     <Box
       sx={{
@@ -45,29 +42,12 @@ const InputSearch = ({
         <SearchIcon />
       </IconButton>
       <input
+        {...field}
         type="text"
-        value={searchQuery}
         className="w-full px-2 bg-transparent outline-none text-14 text-gray/600"
         placeholder={placeholder}
-        onChange={(e) => setSearchQuery(e.target.value.trim())}
-        onKeyDown={handleKeyDown}
+        // onKeyDown={handleKeyDown}
       />
-      {searchQuery.length > 0 && (
-        <IconButton
-          aria-label="clear"
-          sx={{ color: COLORS.gray400, p: '8px' }}
-          onClick={() => {
-            setSearchQuery('');
-          }}
-        >
-          <CancelRoundedIcon
-            sx={{
-              fontSize: 18,
-              color: COLORS.gray300,
-            }}
-          />
-        </IconButton>
-      )}
     </Box>
   );
 };
