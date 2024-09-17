@@ -1,8 +1,14 @@
-import Box from '@mui/material/Box';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+
+// @mui
+import Box from '@mui/material/Box';
 import InputSearch from '~/components/Input/search/InputSearch';
+
+// @components
 import KeyWordList, { IKeyword } from '~/components/Keyword/KeyWordList';
+
+// hooks
 import useSearchQuery from '~/hooks/useSearchQuery';
 
 interface SearchFormValues {
