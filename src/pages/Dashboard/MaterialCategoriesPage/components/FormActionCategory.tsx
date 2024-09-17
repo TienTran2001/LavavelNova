@@ -89,7 +89,9 @@ const FormActionCategory = forwardRef(
 
     useEffect(() => {
       if (loading) {
-        handleSubmit(handleRequest)();
+        handleSubmit(handleRequest, () => {
+          setLoading(false);
+        })();
       }
     }, [handleRequest, handleSubmit, loading]);
 

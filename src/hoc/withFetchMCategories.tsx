@@ -31,7 +31,7 @@ export default function withFetchMCategories<T>(
     const fetchCategories = async () => {
       try {
         const number = randomNumber(2);
-        if (number === 1) {
+        if (number === 4) {
           throw new Error('hehe');
         }
         console.log('xuong');

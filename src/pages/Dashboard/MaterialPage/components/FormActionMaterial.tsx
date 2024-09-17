@@ -22,16 +22,26 @@ import SelectForm from '~/components/Input/SelectForm';
 // @utils
 import COLORS from '~/utils/colors';
 
-// @hoc
-import withMaterialsAndSuppliers, {
-  WithListMCSProps,
-} from '~/hoc/withMCategoriesAndSuppliers';
+// @apis
+import { getAllMaterialCategoriesAPI } from '~/apis/materialCategories';
+import { getSuppliersAPI } from '~/apis/supplier';
 
 // @types
 import {
   IFormMaterial,
   IMaterialDetail,
 } from '~/pages/Dashboard/MaterialPage/type';
+
+import { ICategory } from '~/pages/Dashboard/MaterialCategoriesPage/type';
+interface ISuppliers {
+  id: string;
+  name: string;
+}
+
+export interface WithListMCSProps {
+  categories: ICategory[];
+  suppliers: ISuppliers[];
+}
 
 interface IProps {
   handleAction: (data: IFormMaterial) => void;
@@ -45,9 +55,9 @@ const FormActionMaterial = forwardRef(
       material,
       type = 'create',
       handleAction,
-      categories,
-      suppliers,
-    }: IProps & WithListMCSProps,
+    }: // categories,
+    // suppliers,
+    IProps,
     ref
   ) => {
     const navigate = useNavigate();
@@ -64,6 +74,28 @@ const FormActionMaterial = forwardRef(
 
     const [imageUrl, setImageUrl] = useState(''); // image preview
     const [resetImage, setResetImage] = useState(false);
+
+    const [categories, setCategories] = useState<ICategory[]>([]);
+    const [suppliers, setSuppliers] = useState<ISuppliers[]>([]);
+
+    // @fetch
+    const fetchSuppliers = async () => {
+      try {
+        const response = await getSuppliersAPI();
+        setSuppliers(response.data.results);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllMaterialCategoriesAPI();
+        setCategories(response.data.results);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
     // @handle
     const onSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -106,9 +138,16 @@ const FormActionMaterial = forwardRef(
 
     useEffect(() => {
       if (loading) {
-        handleSubmit(handleRequest)();
+        handleSubmit(handleRequest, () => {
+          setLoading(false);
+        })();
       }
     }, [handleRequest, handleSubmit, loading]);
+
+    useEffect(() => {
+      fetchCategories();
+      fetchSuppliers();
+    }, []);
 
     return (
       <div>
@@ -301,5 +340,5 @@ const FormActionMaterial = forwardRef(
   }
 );
 
-const CSFormActionMaterial = withMaterialsAndSuppliers(FormActionMaterial);
-export default CSFormActionMaterial;
+// const CSFormActionMaterial = withMaterialsAndSuppliers(FormActionMaterial);
+export default FormActionMaterial;

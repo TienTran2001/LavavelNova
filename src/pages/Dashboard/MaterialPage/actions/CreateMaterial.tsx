@@ -14,6 +14,7 @@ import { IFormMaterial } from '~/pages/Dashboard/MaterialPage/type';
 const CreateMaterial = () => {
   // @ref
   const actionFormRef = useRef<{ resetForm: () => void }>(null);
+  console.log(actionFormRef);
 
   // @handle
   const handleAddMaterial = useCallback(async (data: IFormMaterial) => {
