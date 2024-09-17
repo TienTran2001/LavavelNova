@@ -68,7 +68,9 @@ const MaterialCategoriesPage = () => {
 
       {/* --------------------table------------------------ */}
       <Box mt={3}>
-        <CategoriesTable />
+        <ErrorBoundary fallback={ErrorDataTable}>
+          <CategoriesTable />
+        </ErrorBoundary>
       </Box>
       {/* -------------------- end table------------------------ */}
     </Box>

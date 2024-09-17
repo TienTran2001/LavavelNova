@@ -128,7 +128,7 @@ const CategoriesTable = () => {
         if (!ignore) {
           setData((prev) => ({ ...prev, loading: false }));
           const errorResponse = err as IError;
-          handleError(errorResponse);
+          handleError(new Error(errorResponse.message));
         }
       }
     };
