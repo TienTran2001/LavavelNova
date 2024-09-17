@@ -9,19 +9,7 @@ import SIZES from '~/utils/sizes';
 
 const DashboardLayout = () => {
   const { isMenuOpen, setIsMenuOpen } = useMenuContext();
-  // const location = useLocation();
 
-  // const { user } = useUserStore();
-
-  // if (!user) {
-  //   return (
-  //     <Navigate
-  //       to={currentPath.login}
-  //       replace
-  //       state={{ redirectTo: location }}
-  //     />
-  //   );
-  // }
   return (
     <>
       {isMenuOpen && (
@@ -48,7 +36,12 @@ const DashboardLayout = () => {
           }}
           className="2xl:ml-[240px] ml-0"
         >
-          <Box maxWidth={SIZES.container} mx="auto" minHeight={'70vh'}>
+          <Box
+            maxWidth={SIZES.container}
+            width="100%"
+            mx="auto"
+            minHeight={'70vh'}
+          >
             <Outlet />
           </Box>
           <Box component="footer" sx={{ textAlign: 'center', mt: '39px' }}>
