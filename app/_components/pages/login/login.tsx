@@ -1,10 +1,11 @@
 'use client';
 
 import { loginAPI } from '@/app/_api/auth';
-import InputForm from '@/app/_components/ui/input/inputForm';
+import InputForm from '@/app/_components/ui/input/InputForm';
 import { useUserStore } from '@/app/_store/useUserStore';
+import redirectIfLoggedIn from '@/app/_utils/redirectIfLoggedIn';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -29,9 +30,12 @@ const Login = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const router = useRouter(); // Thay thế cho useNavigate
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { setUser, setToken, setRefreshToken } = useUserStore();
+
+  redirectIfLoggedIn();
 
   const handleOnSubmit = (data: ILogin) => {
     setValueLogin(data);
@@ -39,7 +43,7 @@ const Login = () => {
   };
 
   const handleRedirectLogin = () => {
-    router.push('/');
+    router.push('/admin/materials');
   };
 
   const handleLogin = useCallback(async () => {
