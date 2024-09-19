@@ -19,7 +19,7 @@ interface IProps {
 
 const SideBarDropDown = ({ item }: IProps) => {
   const pathname = usePathname();
-  const checkOpen = pathname.startsWith(`/${item.state}`);
+  const checkOpen = pathname.startsWith(`/admin/${item.state}`);
 
   const [dropdown, setDropDow] = useState(checkOpen);
 
