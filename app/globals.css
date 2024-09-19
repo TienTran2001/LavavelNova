@@ -1,27 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  body {
+    @apply font-body;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Thiết lập màu cho thumb của scrollbar */
+  *::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    @apply bg-gray/300;
+  }
+
+  /* Thiết lập kích thước cho thumb của scrollbar */
+  *::-webkit-scrollbar-thumb:vertical {
+    height: 50px;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .container {
+    @apply mx-auto max-w-container;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiDrawer-paper.MuiDrawer-paperAnchorLeft.MuiDrawer-paperAnchorDockedLeft {
+  transition: all 0.2s ease-in-out;
+}
+
+@media only screen and (max-width: 1535px) {
+  .sidebar-cs
+    .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiDrawer-paper.MuiDrawer-paperAnchorLeft.MuiDrawer-paperAnchorDockedLeft {
+    transform: translateX(-100%);
+    transition: all 0.2s ease-in-out;
   }
 }
