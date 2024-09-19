@@ -5,8 +5,8 @@ import InputForm from '@/app/_components/ui/input/InputForm';
 import { useUserStore } from '@/app/_store/useUserStore';
 import redirectIfLoggedIn from '@/app/_utils/redirectIfLoggedIn';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -16,11 +16,6 @@ interface ILogin {
 }
 
 const Login = () => {
-  const [valueLogin, setValueLogin] = useState<ILogin>({
-    email: '',
-    password: '',
-  });
-
   const {
     register,
     setValue,
@@ -31,14 +26,13 @@ const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const { setUser, setToken, setRefreshToken } = useUserStore();
 
   redirectIfLoggedIn();
 
-  const handleOnSubmit = (data: ILogin) => {
-    setValueLogin(data);
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setLoading(true);
   };
 
@@ -46,46 +40,42 @@ const Login = () => {
     router.push('/admin/materials');
   };
 
-  const handleLogin = useCallback(async () => {
-    try {
-      const res = await loginAPI({
-        email: valueLogin.email,
-        password: valueLogin.password,
-      });
-      setLoading(false);
+  const handleLogin = useCallback(
+    async (data: ILogin) => {
+      try {
+        const res = await loginAPI({
+          email: data.email,
+          password: data.password,
+        });
+        setLoading(false);
 
-      const { access, id, refresh } = res.data;
-      toast('🔔 Logged in successfully');
-      setUser({
-        id,
-        email: 'admin@gmail.com',
-        avatar:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
-      });
-      setToken(access);
-      setRefreshToken(refresh);
+        const { access, id, refresh } = res.data;
+        toast('🔔 Logged in successfully');
+        setUser({
+          id,
+          email: 'admin@gmail.com',
+          avatar:
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgzJoA4UNRwoNGyX-1RxI3Mob1OMDdqtijIQ&s',
+        });
+        setToken(access);
+        setRefreshToken(refresh);
 
-      handleRedirectLogin();
-    } catch (err) {
-      setLoading(false);
-      const { response } = err as {
-        response?: { data: { detail: string } };
-      };
-      if (response && response.data && response.data.detail)
-        toast.error(response.data.detail);
-    }
-  }, [
-    router,
-    setRefreshToken,
-    setToken,
-    setUser,
-    valueLogin.email,
-    valueLogin.password,
-  ]);
+        handleRedirectLogin();
+      } catch (err) {
+        setLoading(false);
+        const { response } = err as {
+          response?: { data: { detail: string } };
+        };
+        if (response && response.data && response.data.detail)
+          toast.error(response.data.detail);
+      }
+    },
+    [router, setRefreshToken, setToken, setUser]
+  );
 
   useEffect(() => {
     if (loading) {
-      handleLogin();
+      handleSubmit(handleLogin)();
     }
   }, [loading, handleLogin]);
 
@@ -105,49 +95,53 @@ const Login = () => {
           />
         </div>
         <h2 className="mt-4 text-3xl font-bold text-center">Login</h2>
-        <div className="flex flex-col mt-8 gap-y-6">
-          <div className="flex flex-col gap-y-4">
-            <InputForm
-              label="Email*"
-              register={register}
-              id="email"
-              placeholder="Enter email..."
-              validate={{
-                required: 'Email is required.',
-                pattern: {
-                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  message: 'Invalid email!',
-                },
+        <form
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleOnSubmit(e)}
+        >
+          <div className="flex flex-col mt-8 gap-y-6">
+            <div className="flex flex-col gap-y-4">
+              <InputForm
+                label="Email*"
+                register={register}
+                id="email"
+                placeholder="Enter email..."
+                validate={{
+                  required: 'Email is required.',
+                  pattern: {
+                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                    message: 'Invalid email!',
+                  },
+                }}
+                errors={errors}
+              />
+              <InputForm
+                label="Password*"
+                type="password"
+                register={register}
+                id="password"
+                placeholder="Enter password..."
+                validate={{
+                  required: 'Password is required.',
+                }}
+                errors={errors}
+              />
+            </div>
+            <LoadingButton
+              loading={loading}
+              variant="contained"
+              sx={{
+                py: '8px',
+                borderRadius: '8px',
+                textTransform: 'capitalize',
+                fontSize: '18px',
+                fontWeight: 700,
               }}
-              errors={errors}
-            />
-            <InputForm
-              label="Password*"
-              type="password"
-              register={register}
-              id="password"
-              placeholder="Enter password..."
-              validate={{
-                required: 'Password is required.',
-              }}
-              errors={errors}
-            />
+              type="submit"
+            >
+              Login
+            </LoadingButton>
           </div>
-          <LoadingButton
-            loading={loading}
-            variant="contained"
-            onClick={handleSubmit(handleOnSubmit)}
-            sx={{
-              py: '8px',
-              borderRadius: '8px',
-              textTransform: 'capitalize',
-              fontSize: '18px',
-              fontWeight: 700,
-            }}
-          >
-            Login
-          </LoadingButton>
-        </div>
+        </form>
       </div>
     </div>
   );
