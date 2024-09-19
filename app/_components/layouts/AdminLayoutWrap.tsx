@@ -22,7 +22,6 @@ const AdminLayoutWrap = ({ children }: { children: React.ReactNode }) => {
         <div className={`${isMenuOpen ? '' : 'sidebar-cs'} `}>
           <SideBarComponent />
         </div>
-        top bả nè
         <TopBarComponent />
         <Box
           component={'main'}
