@@ -1,3 +1,5 @@
+import UpdateMaterial from '@/app/_components/pages/materials/actions/UpdateMaterial';
+
 interface IProps {
   params: {
     id: string;
@@ -5,8 +7,7 @@ interface IProps {
 }
 
 const UpdateMaterialPage = ({ params }: IProps) => {
-  console.log(params);
-  return <div>hihihhi {params.id}</div>;
+  return <UpdateMaterial id={params.id} />;
 };
 
 export default UpdateMaterialPage;

@@ -11,7 +11,7 @@ const redirectIfLoggedIn = () => {
 
   useEffect(() => {
     if (isHydrated && user) {
-      if (pathname === '/login') router.push('/admin/materials');
+      if (pathname === '/login') router.push('/admin/materials/main');
       else router.back();
     }
   }, [isHydrated, user, router]);

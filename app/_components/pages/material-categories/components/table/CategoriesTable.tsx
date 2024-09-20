@@ -4,20 +4,21 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import {
-  deleteMaterialAPI,
-  deleteMaterialsAPI,
-  getMaterialsAPI,
-} from '@/app/_api/materials';
+  deleteMaterialCategoriesAPI,
+  deleteMaterialCategoryAPI,
+  getMaterialCategoriesAPI,
+} from '@/app/_api/materialCategories';
 import { pencilIcon, trashIcon } from '@/app/_assets';
-import { IDataTableMaterial } from '@/app/_components/pages/materials/type';
+import { IDataTable } from '@/app/_components/pages/material-categories/type';
 import ModalDanger from '@/app/_components/ui/modal/ModalDanger';
 import TableSkeleton from '@/app/_components/ui/skeletons/TableSkeleton';
 import EnhancedTableHead from '@/app/_components/ui/table/EnhancedTableHead';
 import EnhancedTablePagination from '@/app/_components/ui/table/EnhancedTablePagination';
 import EnhancedTableToolbar from '@/app/_components/ui/table/EnhancedTableToolbar';
 import { COLORS } from '@/app/_constants';
-import { headCellsMaterialsTable } from '@/app/_constants/materials';
+import { headCellsCategoriesTable } from '@/app/_constants/material-categores';
 import { useSearchQuery, useSelectItemTable } from '@/app/_hooks';
+import { IError } from '@/app/_hooks/useErrorHandler';
 import usePaging from '@/app/_hooks/usePaging';
 import calculateItemIndexInTable from '@/app/_utils/calculateItemIndexInTable';
 import Box from '@mui/material/Box';
@@ -39,20 +40,17 @@ interface IRefModel {
 
 const initialValue = {
   count: 0,
-  materials: [],
+  categories: [],
   loading: false,
 };
 
-const MaterialsTable = () => {
+const CategoriesTable = () => {
   const router = useRouter();
-  const searchMaterialName = useSearchQuery('name');
-  const searchCategoryName = useSearchQuery('category');
+  const { searchQuery } = useSearchQuery('name');
 
   const limit = 5;
-  const [data, setData] = useState<IDataTableMaterial>(initialValue);
+  const [data, setData] = useState<IDataTable>(initialValue);
   const { page } = usePaging(Math.ceil(data.count / limit));
-
-  const [materialId, setMaterialId] = useState('');
 
   const {
     selected,
@@ -61,9 +59,9 @@ const MaterialsTable = () => {
     handleClickSelect,
     handleSelectAllClick,
   } = useSelectItemTable();
+  const [categoryId, setCategoryId] = useState('');
 
-  const [reload, setReload] = useState(false); // reload data table
-  // const { error, handleError } = useErrorHandler();
+  const [reload, setReload] = useState(false);
 
   // @ref
   const modalDeleteRef = useRef<IRefModel>(null);
@@ -72,7 +70,7 @@ const MaterialsTable = () => {
   // @handle
   const handleDelete = async (id: string) => {
     try {
-      await deleteMaterialAPI(id);
+      await deleteMaterialCategoryAPI(id);
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!!');
     } catch (err) {
@@ -81,56 +79,49 @@ const MaterialsTable = () => {
     }
   };
 
-  const handleDeleteMaterials = async (selected: string[]) => {
+  const handleDeleteCategories = async (selected: string[]) => {
     try {
-      await deleteMaterialsAPI(selected);
+      await deleteMaterialCategoriesAPI(selected);
       setReload((prev) => !prev);
       toast('🔔 Deleted successfully!!');
     } catch (err) {
       modalDeleteALotRef.current?.close();
-      toast('⚠️ Deleted fail!');
+      toast('Deleted fail!');
     }
   };
 
-  // @effect
+  // @useEffect
   useEffect(() => {
     let ignore = false;
 
-    const fetchMaterials = async () => {
+    const fetchCategories = async () => {
       const offset = (page - 1) * limit;
       try {
         setData((prev) => ({ ...prev, loading: true }));
-        const result = await getMaterialsAPI({
-          name: searchMaterialName.searchQuery,
-          category: searchCategoryName.searchQuery,
+        const result = await getMaterialCategoriesAPI({
+          name: searchQuery,
           offset,
         });
-
         if (!ignore) {
           const { results, count } = result.data;
-          setData({ count: count, materials: results, loading: false });
+          setData({ count: count, categories: results, loading: false });
           setSelected([]);
         }
       } catch (err) {
         if (!ignore) {
-          console.log(err);
+          setData((prev) => ({ ...prev, loading: false }));
+          const errorResponse = err as IError;
+          console.error(errorResponse);
         }
       }
     };
 
-    fetchMaterials();
+    fetchCategories();
 
     return () => {
       ignore = true;
     };
-  }, [
-    searchMaterialName.searchQuery,
-    searchCategoryName.searchQuery,
-    page,
-    limit,
-    setSelected,
-    reload,
-  ]);
+  }, [page, searchQuery, setSelected, reload]);
 
   // if (error) {
   //   throw error;
@@ -142,16 +133,16 @@ const MaterialsTable = () => {
         <Paper sx={{ width: '100%', mb: 2 }}>
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onSelectAllClick={(e) => handleSelectAllClick(e, data.materials)}
-            rowCount={data.materials.length}
-            handleDeleteAll={() => modalDeleteALotRef.current?.open()}
+            onSelectAllClick={(e) => handleSelectAllClick(e, data.categories)}
+            rowCount={data.categories.length}
+            handleDeleteAll={() => modalDeleteALotRef?.current?.open()}
           />
 
           <TableContainer>
             {!data.loading ? (
               <Table
                 sx={{
-                  minWidth: 2000,
+                  minWidth: 750,
                   borderBottom: `0.5px solid ${COLORS.gray300}`,
                 }}
                 aria-labelledby="tableTitle"
@@ -159,10 +150,10 @@ const MaterialsTable = () => {
               >
                 <EnhancedTableHead
                   numSelected={selected.length}
-                  headCells={headCellsMaterialsTable}
+                  headCells={headCellsCategoriesTable}
                 />
                 <TableBody>
-                  {data.materials.map((row, index) => {
+                  {data.categories.map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -205,47 +196,22 @@ const MaterialsTable = () => {
                         </TableCell>
                         <TableCell sx={{ color: COLORS.gray500 }} align="left">
                           <span className=" max-w-[300px] line-clamp-1">
-                            {row.part_number}
-                          </span>
-                        </TableCell>
-                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className=" max-w-[300px] line-clamp-1">
                             {row.name}
                           </span>
                         </TableCell>
-
                         <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className=" max-w-[300px] line-clamp-1">
-                            {row.large_title}
-                          </span>
+                          {row.price_type === 'per_quantity' ? (
+                            <>
+                              <span className="px-[6px] py-[3px] font-bold bg-[#FFF1D6] rounded-[8px] text-[#B76E00] ">
+                                Quantity
+                              </span>
+                            </>
+                          ) : (
+                            <span className="px-[6px] py-[3px] font-bold bg-green-500/30 rounded-[8px] text-[#C03530] ">
+                              Metter
+                            </span>
+                          )}
                         </TableCell>
-                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className=" max-w-[300px] line-clamp-1">
-                            {row.small_title}
-                          </span>
-                        </TableCell>
-                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className="px-[6px] py-[3px] font-bold bg-green-500/30 rounded-[8px] text-[#C03530] ">
-                            {row.type}
-                          </span>
-                        </TableCell>
-                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className="inline-block max-w-[300px] line-clamp-1 px-[6px] py-[3px] font-bold bg-[#FFF1D6] rounded-[8px] text-[#B76E00] ">
-                            {row.category.name}
-                          </span>
-                        </TableCell>
-                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className=" max-w-[300px] line-clamp-1">
-                            {row.supplier.name}
-                          </span>
-                        </TableCell>
-
-                        <TableCell sx={{ color: COLORS.gray500 }} align="left">
-                          <span className=" max-w-[300px] line-clamp-1">
-                            {row.basic_price}
-                          </span>
-                        </TableCell>
-
                         <TableCell align="left">
                           <Box
                             display="flex"
@@ -255,7 +221,9 @@ const MaterialsTable = () => {
                           >
                             <IconButton
                               onClick={() =>
-                                router.push(`/admin/materials/main/${row.id}`)
+                                router.push(
+                                  `/admin/materials/categories/${row.id}`
+                                )
                               }
                             >
                               <Image src={pencilIcon} alt="pencil icon" />
@@ -263,7 +231,7 @@ const MaterialsTable = () => {
                             <IconButton
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setMaterialId(row.id);
+                                setCategoryId(row.id);
                                 modalDeleteRef?.current?.open();
                               }}
                             >
@@ -291,16 +259,16 @@ const MaterialsTable = () => {
         <ModalDanger
           ref={modalDeleteRef}
           content="Are you sure want to delete?"
-          handleDelete={() => handleDelete(materialId)}
+          handleDelete={() => handleDelete(categoryId)}
         />
         <ModalDanger
           ref={modalDeleteALotRef}
-          content="You want to delete the selected materials?"
-          handleDelete={() => handleDeleteMaterials(selected)}
+          content="You want to delete the selected material categories?"
+          handleDelete={() => handleDeleteCategories(selected)}
         />
       </Box>
     </>
   );
 };
 
-export default MaterialsTable;
+export default CategoriesTable;

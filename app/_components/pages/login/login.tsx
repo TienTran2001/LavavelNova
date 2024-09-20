@@ -37,7 +37,7 @@ const Login = () => {
   };
 
   const handleRedirectLogin = () => {
-    router.push('/admin/materials');
+    router.push('/admin/materials/main');
   };
 
   const handleLogin = useCallback(

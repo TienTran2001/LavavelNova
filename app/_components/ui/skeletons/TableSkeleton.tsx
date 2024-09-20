@@ -4,6 +4,10 @@ export default function TableSkeleton() {
   return (
     <div>
       <TableItemSkeleton />
+      <TableItemSkeleton />
+      <TableItemSkeleton />
+      <TableItemSkeleton />
+      <TableItemSkeleton />
     </div>
   );
 }

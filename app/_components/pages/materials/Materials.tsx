@@ -25,7 +25,7 @@ export default function Materials() {
         </div>
         {/* ------------------ end search ------------------ */}
         <div className="flex-shrink-0">
-          <Link href="">
+          <Link href="/admin/materials/main/create">
             <Button
               variant="contained"
               sx={{
