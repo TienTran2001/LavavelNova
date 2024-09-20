@@ -51,18 +51,18 @@ const appRoutes: RouteType[] = [
     },
     child: [
       {
-        path: '/admin/materials',
-        state: 'materials',
+        path: '/admin/materials/main',
+        state: 'materials.main',
         sideBarProps: {
           displayName: 'Main',
         },
       },
       {
-        path: '/admin/materials/create',
+        path: '/admin/materials/main/create',
         state: 'materials.create',
       },
       {
-        path: '/admin/materials/update',
+        path: '/admin/materials/main/update',
         state: 'materials.update',
       },
       {

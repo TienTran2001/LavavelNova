@@ -16,7 +16,7 @@ const SideBarItem = ({ item }: IProps) => {
   const { setIsMenuOpen } = useMenuContext();
 
   const pathname = usePathname();
-  const isActive = pathname === item.path;
+  const isActive = pathname.startsWith(`${item.path}`);
 
   return item.sideBarProps && item.path ? (
     <ListItemButton
